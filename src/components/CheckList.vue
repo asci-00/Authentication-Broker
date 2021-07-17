@@ -1,0 +1,37 @@
+<template>
+    <div class="checked-wrapper">
+        <div v-for="(item, idx) in list" class="check-item" :key="item">
+            <input 
+                type="checkbox" 
+                @change="onChange(idx)" 
+                :checked="isChecked[idx]"
+                v-model="isChecked[idx]"
+                :id="item"/>
+            <label :for="item">{{item}}</label>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    props : {
+        list : Array,
+        checked : Array,
+    },
+    data() { return { isChecked : this.checked } },
+    methods : {
+        onChange(idx) { this.$emit('change', this.isChecked) },
+    },
+    watch : { checked(data) { this.isChecked = data } }
+}
+</script>
+
+<style lang="scss" scoped>
+.checked-wrapper {
+    padding:10px;
+    margin:5px 0;
+    min-height:300px;
+    border:1px solid grey;
+    & .check-item { margin:16px 0; }
+}
+</style>
