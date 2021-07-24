@@ -1,38 +1,39 @@
 <template>
-  <div class="home">
-    <Table
+  <div class="wrapper">
+    <div class="title">
+      장비 관리
+      <input type="button" value="인증 정보 설정" class="right-button"  @click="buttonClick()"/>
+    </div>
+    <div class="container">
+      <Table
       :category="category"
-      :columns="r_columns"
+      :columns="columns"
       :data="data"
-    />
+      />
+    </div>
   </div>
 </template>
 
+<style scoped>
+.container {
+  padding:10px;
+}
+</style>
+
 <script lang="ts">
 import Table from '@/components/Table.vue'; // @ is an alias to /src
-import {category, columns, buttons, data} from '@/modules/static/equipment'
+import {category, columns, data} from '@/modules/static/equipment'
 
 export default {
-  components: {
-    Table,
-  },
+  components: { Table, },
   data() {
     return {
-      category, 
-      r_columns : [], 
-      data
+      data, category, 
+      columns
     }
   },
-  created() {
-    this.r_columns = columns.concat([{ key:'11', field : 'action', title : '동작', 
-    renderBodyCell:({rowData}, h) => {
-      return h('input', {
-        attrs : {
-          type : 'button',
-          value : '변경'
-        }
-      })
-    }}])
-  }
+  methods : {
+    buttonClick() { this.$router.push('/auth') }
+  },
 }
 </script>

@@ -22,14 +22,12 @@
       </div>
       <div class="half-container">
         <span class="head">인증 정보 설정</span>
-        <div class="setting-box">
-          <item-add-remove/>
-        </div>
+        <div class="setting-box"><item-add-remove/></div>
         <div class="foot-box">
           <div class="info-text">Filename</div>
           <div class="button-box">
             <button class="submit">확인</button>
-            <button class="reset">취소</button>
+            <button class="reset secondary">취소</button>
           </div>
         </div>
       </div>
@@ -70,10 +68,7 @@
       }
     }
 }
-.tree {
-  min-height:300px;
-  border:1px solid grey;
-}
+.tree { min-height:300px;}
 </style>
 
 <script lang="ts">

@@ -1,21 +1,21 @@
 <template>
     <div class="wrapper">
-        <div class="title">신규 등록</div>
-        <div class="guide-msg">Authentication Broker에서 사용할 권한을 {{state.label}}합니다.</div>
+        <div class="title">{{title}}</div>
+        <div class="guide-msg">{{guideMessage}}</div>
         <section class="container">
             <div class="half-container right-border">
                 <div class="label-content">
                     <label>권한명</label>
-                    <input type="text" placeholder="Input permission name" v-model="name"/>
+                    <input type="text" placeholder="Input permission name" v-model="per_name"/>
                 </div>
                 <div class="label-content">
                     <div>
                         <label>권한 목록</label>
                         <i class="fa fa-plus icon" @click="init()"></i>
                     </div>
-                    <div class="permission-list">
+                    <div class="permission-list table-container">
                         <ve-table
-                            :max-height="300"                            
+                            :max-height="300"
                             :columns="columns"
                             :table-data="roles"
                             :event-custom-option="{
@@ -52,38 +52,58 @@
             </div>
         </section>
         <footer class="button-box">
-            <button class="submit">확인</button>
-            <button class="reset">취소</button>
+            <button class="submit" @click="onsubmit()">확인</button>
+            <button class="reset secondary" @click="onExit()">취소</button>
         </footer>
+        <modal name="warning-modal" :width="300" :height="200" :classes="['wrapper']">
+            <div class="warning">
+                <div>ㄹㅇ로 취소하시겠습니까?</div>
+                <footer class="button-box center">
+                    <button class="submit" @click="modal_onSubmit()">확인</button>
+                    <button class="reset secondary" @click="modal_onExit()">취소</button>
+                </footer>
+            </div>
+        </modal>
     </div>
 </template>
 
 <script>
 import VJstree from 'vue-jstree'
 import VCheckList from '../components/CheckList'
-import {permColumns, permission_data, tree_data} from '../modules/static/permission'
+import {permColumns, tree_data} from '../modules/static/permission'
 
 export default {
   components : { VJstree, VCheckList }, 
   props : {
-    //state : Object,
+    title : String,
+    guideMessage : String,
+
+    onSubmit : Function,
+    onClose : Function,
+    
+    name : String,
+    role : {
+        type : Array,
+        default : () => []
+    },
+//state : Object,
   },
   data() {
       return {
-          console,
           columns : permColumns,
-          state : { label : '변경' },
-          name : '', path : '',
+          per_name : this.name, path : '',
           tree_data,
           perm_list : ['create', 'delete', 'update', 'read', 'list'],
           checked : [false, false, false, false, false],
-          roles : []
+          roles : this.role,
+
       }
   },
   methods : {
-    itemClick (item) { 
+    itemClick (node, item, e) { 
         this.init()
-        let now = item, path = `/${item.model.text}`
+        console.log(item.custom)
+        let now = node, path = `/${node.model.text}`
         while(now.$parent.model) {
             now = now.$parent
             path = `/${now.model.text}${path}`
@@ -105,11 +125,16 @@ export default {
     init() {
         this.checked = this.perm_list.map(i => false)
         this.path = ""
-    }
-  },
-  created() {
+    },
+    onsubmit() { this.onSubmit(this.roles); this.onClose() },
+    onExit() { this.$modal.show('warning-modal') },
 
-  }
+    modal_onSubmit() { 
+        this.$modal.hide('warning-modal') 
+        this.$emit('close')
+    },
+    modal_onExit() { this.$modal.hide('warning-modal') }
+  },
 }
 </script>
 
@@ -119,10 +144,6 @@ export default {
     & .guide-msg {
         padding-left:10px;
         margin-bottom:10px;
-    }
-    & .button-box {
-        padding:10px;
-        text-align:right;
     }
 }
 .container {
@@ -148,8 +169,6 @@ export default {
             grid-template-columns: repeat(2, 1fr);
             grid-gap:10px;
             & .tree {
-                margin:5px 0;
-                border:1px solid grey;
                 height:300px;
                 overflow-y:scroll;
             }
@@ -161,8 +180,5 @@ export default {
         }
     }   
 }
-.table-wrapper {
-    min-height:300px;
-    border:1px solid grey;
-}
+.table-wrapper { border-bottom:1px solid grey; }
 </style>

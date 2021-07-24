@@ -13,15 +13,11 @@
         />
       </div>
       <hr/>
-      <input 
-        v-for="(button, idx) in buttons"
-        type="button" 
-        :value="button.label || '버튼'"
-        :key="idx"/>
     </div>
     <ve-table 
       :columns="columns" 
       :table-data="tableData"
+      class="table-container"
       />
     <div class="table-pagination">
       <ve-pagination
@@ -41,9 +37,6 @@
 .table-wrapper {
   min-width:1080px;
 }
-.table-toolbar {
-  text-align:left;
-}
 .table-pagination {
   margin-top: 20px;
   text-align: left;
@@ -54,6 +47,7 @@
   grid-template-columns: 1fr 2fr;
   grid-gap:10px;
 }
+
 </style>
 
 <script>
