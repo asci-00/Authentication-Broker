@@ -23,15 +23,20 @@
       </div>
       <div class="half-container">
         <div class="inner-box-title" :style="{marginBottom:'10px'}">인증 정보 설정</div>
-        <div class="setting-box"><item-add-remove/></div>
+        <div class="setting-box"><setting-certi-info :info-list="data_list" @delete="onDelete()"/></div>
       </div>
     </section>
-    <modal name="auth-manage-popup" :width="900" :height="542" :classes="['modal']">
+    <modal name="auth-manage-popup" :width="900" :height="475" :classes="['modal']">
       <auth-create
         @submit="onApply"
         @close="closePopup()"
       />
     </modal>
+    <warning
+      :name="modal_name"
+      message="삭제하시겠습니까?"
+      @click="modal_onSubmit()"
+      @close="modal_onExit()"/>
   </div>
 </template>
 
@@ -79,18 +84,23 @@
         text-align : right;
       }
     }
+    & .tree-wrapper {
+      min-height:400px;
+      height:calc(100% - 60px);
+    }
 }
 </style>
 
 <script lang="ts">
 import VJstree from 'vue-jstree'
 import AuthCreate from './popup/AuthCreate.vue'
-import ItemAddRemove from '@/components/ItemAddRemove.vue'
 import { tree_data } from '@/modules/static/permission'
 import SearchBar from '@/components/SearchBar.vue'
+import SettingCertiInfo from '@/components/SettingCertiInfo.vue'
+import Warning from '@/components/Warning'
 
 export default {
-  components : { VJstree, SearchBar, ItemAddRemove, AuthCreate },
+  components : { VJstree, SearchBar, AuthCreate, SettingCertiInfo, Warning },
   data() {
     return {
       tree_data,
@@ -100,6 +110,8 @@ export default {
       ],
       selected : 'all', search : '',
       path : '',
+      data_list: {},
+      modal_name : 'auth-manage-modal'
     }
   },
   methods : {
@@ -109,17 +121,24 @@ export default {
             now = now.$parent
             path = `/${now.model.text}${path}`
         }
-        console.log(item.model.custom)
+        this.data_list = item.model.info
         this.path = path
     },
     onApply(data) {
 
     },
+    onDelete() { this.$modal.show(this.modal_name) },
     onSearch(search) { },
     openPopup() { this.$modal.show('auth-manage-popup') },
-    closePopup() { this.$modal.hide('auth-manage-popup') }
+    closePopup() { this.$modal.hide('auth-manage-popup') },
+
+    modal_onSubmit() {
+        //삭제처리
+        this.modal_onExit()
+    },
+    modal_onExit() { this.$modal.hide(this.modal_name) }
+
   },
-  created() {
-  }
+  mounted() { }
 }
 </script>
