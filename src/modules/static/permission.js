@@ -36,6 +36,27 @@ export const permission_data = [
 ]
 export const tree_data = [
   {
+    "text": "external",
+    "opened": true,
+    "folder": true,
+    "children": [
+      { "text": "KT" },
+      { "text": "Hoseo",
+        "folder" : true,
+        "children" : [
+          { "text": "SSH:000.000.000.001", "icon": "fa fa-file", "custom" : {data : 'test', custom:'filter'}, },
+        ]
+      },
+    ]
+  },
+  {
+    "text": "internal",
+    "folder" : true
+  }
+]
+
+export const example_data = [
+  {
     "text": "Same but with checkboxes",
     "opened": true,
     "folder": true,

@@ -5,8 +5,8 @@
         <select v-model="selected">
           <option v-for="(item, idx) in t_category" :key="idx" :value="item.field">{{item.label}}</option>
         </select>
-        <search-bar 
-          v-model="search" 
+        <search-bar
+          v-model="search"
           placeholder="Search"
           @onsearch="onSearch(search)"
           :width="200"
@@ -14,8 +14,8 @@
       </div>
       <hr/>
     </div>
-    <ve-table 
-      :columns="columns" 
+    <ve-table
+      :columns="columns"
       :table-data="tableData"
       class="table-container"
       />
@@ -41,12 +41,7 @@
   margin-top: 20px;
   text-align: left;
 }
-.filter {
-  width:300px;
-  display:grid;
-  grid-template-columns: 1fr 2fr;
-  grid-gap:10px;
-}
+
 
 </style>
 
@@ -85,8 +80,8 @@
         return this.searchedData.slice((pageIndex - 1) * pageSize, pageIndex * pageSize);
       },
     },
-    created() { 
-      this.searchedData = this.data 
+    created() {
+      this.searchedData = this.data
       this.t_category = [{label : "전체", field : "all"}, ...this.category]
       this.selected = "all"
     },
@@ -106,10 +101,10 @@
         if(selected !== "all") {
           const selected_category = this.category.find(item => item.field === selected)
           if(selected_category.filter_func) {
-            this.searchedData = this.data.filter(item => selected_category.filter_func(item, search))
+            this.searchedData = data.filter(item => selected_category.filter_func(item, search))
           }
-          else this.searchedData = this.data.filter(item => item[selected].includes(search))
-        } else this.searchedData = this.data.filter(item => filteringData(item, search))
+          else this.searchedData = data.filter(item => item[selected].includes(search))
+        } else this.searchedData = data.filter(item => filteringData(item, search))
       }
     }
   };

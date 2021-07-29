@@ -12,16 +12,24 @@
       :data="data"
       />
     </div>
-    <modal name="modal" :width="900" :height="550" :classes="['modal']">
+    <modal name="modal" :width="900" :height="544" :classes="['modal']">
       <permission-manage
         v-bind="props"
-        @close="onModalClose()"
+        @submit="onApply"
+        @close="onModalClose('modal')"
       />
     </modal>
+    <warning
+      :name="modal_name"
+      :submit="true"
+      :reset="resetButton"
+      :message="modal_message"
+      @click="modal_onSubmit()"
+      @close="modal_onExit()"/>
   </div>
 </template>
 
-<style>
+<style lang="scss" scoped>
 .container {
   padding:10px;
 }
@@ -35,20 +43,23 @@
 
 <script lang="ts">
 import Table from '@/components/Table.vue'; // @ is an alias to /src
-import PermissionManage from '@/views/About.vue'
+import PermissionManage from './popup/PermissionManage.vue'
 import {category, columns, buttons, data} from '@/modules/static/permission'
+import Warning from '../components/Warning'
 
 export default {
   components: {
-    Table, PermissionManage
+    Table, PermissionManage, Warning
   },
   data() {
     return {
-      category, 
-      columns, 
-      buttons, 
+      category,
+      columns,
+      buttons,
       data,
-
+      modal_name : 'remove-modal',
+      resetButton : true,
+      modal_message : '',
       props : {
         title : '',
         guideMessage : '',
@@ -65,33 +76,48 @@ export default {
         title : '권한 변경',
         guideMessage : 'Authentication Broker에서 사용할 권한을 변경합니다.'
       }
-      this.$modal.show('modal') 
+      this.$modal.show('modal')
     },
-    onCreate() { 
+    onCreate() {
       this.props = {
         title : '권한 생성',
         guideMessage : 'Authentication Broker에서 사용할 권한을 생성합니다.'
       }
-      this.$modal.show('modal') 
+      this.$modal.show('modal')
     },
-    onModalClose() {
+    onApply(data) {
+      this.resetButton = false
+      this.modal_message = '적용되었습니다.'
+      this.$modal.show(this.modal_name)
       this.$modal.hide('modal')
-    }
+    },
+    onModalClose(name) { this.$modal.hide(name) },
+    modal_onSubmit() {
+      //삭제처리
+        this.modal_onExit()
+    },
+    modal_onExit() { this.$modal.hide(this.modal_name) }
   },
   created() {
     const last_idx = this.columns.length - 1
+    const _vm = this
     this.columns[last_idx] = {
       ...this.columns[last_idx],
       renderBodyCell : ({row, column, index}, h)=> {
-        return h('input', {
-          attrs : {
-            type : 'button',
-            value : '변경'
-          },
-          on : {
-            click : function() { this.onUpdate(index) }
-          }
-        }, [])
+        return h('div', {
+          attrs : { class : 'button-group' },
+        }, [
+          h('input', {
+            attrs : { type : 'button', value : '변경', class : '' },
+            on : { click : function() { _vm.onUpdate(index) } } }, []),
+          h('input', {
+            attrs : { type : 'button', value : '삭제', class : 'secondary' },
+            on : { click : function() {
+              _vm.resetButton = true
+              _vm.modal_message = '삭제 하시곘습니까?'
+              _vm.$modal.show(_vm.modal_name)
+            } } }, [])
+        ])
       }
     }
   },

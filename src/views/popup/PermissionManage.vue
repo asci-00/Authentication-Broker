@@ -3,7 +3,7 @@
         <div class="title">{{title}}</div>
         <div class="guide-msg">{{guideMessage}}</div>
         <section class="container">
-            <div class="half-container right-border">
+            <div class="inner-container right-border">
                 <div class="label-content">
                     <label>권한명</label>
                     <input type="text" placeholder="Input permission name" v-model="per_name"/>
@@ -13,7 +13,7 @@
                         <label>권한 목록</label>
                         <i class="fa fa-plus icon" @click="init()"></i>
                     </div>
-                    <div class="permission-list table-container">
+                    <div class="table-container">
                         <ve-table
                             :max-height="300"
                             :columns="columns"
@@ -23,31 +23,31 @@
                             }"
                             row-key-field-name="rowKey"
                             :cell-selection-option="{enable:true}"
-                            class="table-wrapper"
+                            class="table-wrapper modal-table"
                         />
                     </div>
                 </div>
             </div>
-            <div class="half-container">
+            <div class="inner-container">
                 <div class="setting-box">
                     <div class="head-box">
                       <div class="tree-wrap">
                         <h2 class="line-label"><span>권한 목록</span></h2>
-                        <v-jstree 
-                            :data="tree_data" 
-                            allow-batch whole-row 
+                        <v-jstree
+                            :data="tree_data"
+                            allow-batch whole-row
                             @item-click="itemClick"
-                            class="tree"/>
+                            class="tree-wrapper scroll-container"/>
                       </div>
                       <div>
                         <h2 class="line-label"><span>권한</span></h2>
                         <v-check-list :list="perm_list" @change="permChange" :checked="checked"/>
                       </div>
                     </div>
-                    <div class="foot-box">
-                        <input type="text" v-model="path"/>
+                    <footer class="foot-box">
+                        <input type="text" v-model="path" placeholder="input path"/>
                         <input type="button" @click="onApply()" value="적용"/>
-                    </div>
+                    </footer>
                 </div>
             </div>
         </section>
@@ -55,32 +55,27 @@
             <button class="submit" @click="onsubmit()">확인</button>
             <button class="reset secondary" @click="onExit()">취소</button>
         </footer>
-        <modal name="warning-modal" :width="300" :height="200" :classes="['wrapper']">
-            <div class="warning">
-                <div>ㄹㅇ로 취소하시겠습니까?</div>
-                <footer class="button-box center">
-                    <button class="submit" @click="modal_onSubmit()">확인</button>
-                    <button class="reset secondary" @click="modal_onExit()">취소</button>
-                </footer>
-            </div>
-        </modal>
+        <warning
+            :submit="true"
+            :name="modal_name"
+            :reset="true"
+            message="취소하시겠습니까?"
+            @click="modal_onSubmit()"
+            @close="modal_onExit()"/>
     </div>
 </template>
 
 <script>
 import VJstree from 'vue-jstree'
-import VCheckList from '../components/CheckList'
-import {permColumns, tree_data} from '../modules/static/permission'
+import VCheckList from '@/components/CheckList'
+import {permColumns, tree_data} from '@/modules/static/permission'
+import Warning from '@/components/Warning'
 
 export default {
-  components : { VJstree, VCheckList }, 
+  components : { VJstree, VCheckList, Warning },
   props : {
     title : String,
     guideMessage : String,
-
-    onSubmit : Function,
-    onClose : Function,
-    
     name : String,
     role : {
         type : Array,
@@ -96,13 +91,11 @@ export default {
           perm_list : ['create', 'delete', 'update', 'read', 'list'],
           checked : [false, false, false, false, false],
           roles : this.role,
-
+        modal_name : 'warning-modal-dept-2'
       }
   },
   methods : {
-    itemClick (node, item, e) { 
-        this.init()
-        console.log(item.custom)
+    itemClick (node, item, e) {
         let now = node, path = `/${node.model.text}`
         while(now.$parent.model) {
             now = now.$parent
@@ -121,19 +114,21 @@ export default {
             path : this.path,
             permission : this.perm_list.filter((i, idx) => this.checked[idx])
         })
+        this.init()
     },
     init() {
         this.checked = this.perm_list.map(i => false)
         this.path = ""
     },
-    onsubmit() { this.onSubmit(this.roles); this.onClose() },
-    onExit() { this.$modal.show('warning-modal') },
-
-    modal_onSubmit() { 
-        this.$modal.hide('warning-modal') 
+    onsubmit() {
+        this.$emit('submit', { list : this.roles })
+    },
+    onExit() { this.$modal.show(this.modal_name) },
+    modal_onSubmit() {
+        this.$modal.hide(this.modal_name)
         this.$emit('close')
     },
-    modal_onExit() { this.$modal.hide('warning-modal') }
+    modal_onExit() { this.$modal.hide(this.modal_name) }
   },
 }
 </script>
@@ -151,8 +146,8 @@ export default {
     grid-template-columns: repeat(2, 1fr);
     grid-gap : 0;
     border-bottom:1px solid grey;
-    
-    & .half-container {
+
+    & .inner-container {
         padding:10px;
         &.right-border { border-right:1px solid grey; }
         & .label-content {
@@ -168,17 +163,13 @@ export default {
             display:grid;
             grid-template-columns: repeat(2, 1fr);
             grid-gap:10px;
-            & .tree {
-                height:300px;
-                overflow-y:scroll;
-            }
         }
         & .foot-box {
             display:grid;
             grid-template-columns: 6fr 2fr;
             grid-gap:10px;
         }
-    }   
+    }
 }
-.table-wrapper { border-bottom:1px solid grey; }
+.table-wrapper { min-height:310px; border-bottom:1px solid grey; }
 </style>
