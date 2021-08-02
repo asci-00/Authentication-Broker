@@ -8,15 +8,15 @@ Vue.use(VueRouter)
 export const routes = [
   {
     path: '/',
-    name: 'Customer',
+    name: '인증 장비 현황',
     component: Customer
   }, {
     path: '/permission',
-    name: 'Permission',
+    name: '인증 권한 관리',
     component: () => import(/* webpackChunkName: "about" */ '../views/Permission.vue')
   }, {
     path: '/auth',
-    name: 'Auth',
+    name: '인증 정보 관리',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.

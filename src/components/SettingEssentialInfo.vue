@@ -1,5 +1,5 @@
 <template>
-    <div class = "wrapper">
+    <div class = "wrapper secondary">
         <div class = "title secondary">
             <label>필수 정보</label>
         </div>

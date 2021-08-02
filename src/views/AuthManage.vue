@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <div class="title">인증 권한 관리</div>
+    <div class="title">인증 정보</div>
     <section class="container">
       <div class="half-container">
         <div class="head">

@@ -1,5 +1,5 @@
 <template>
-      <div class = "wrapper">
+      <div class = "wrapper secondary">
         <div class = "title secondary">접속 정보</div>
         <section class='connect-info'>
           <ul class='list-box type-list'>

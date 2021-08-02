@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="title">
-      장비 관리
+      장비 목록
       <input type="button" value="인증 정보 설정" class="right-button"  @click="buttonClick()"/>
     </div>
     <div class="container">

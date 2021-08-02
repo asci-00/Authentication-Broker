@@ -11,10 +11,51 @@
     font-weight: normal;
     font-style: normal;
 }
+@font-face {
+    font-family: 'S-CoreDream-8Heavy';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-8Heavy.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 body {
     min-width:1200px;
     overflow-x:auto;
     background:#353A3E !important;
+    font-family: 'S-CoreDream-3Light', sans-serif;
+    margin:0;
+}
+#wrapper { padding:20px; }
+#navWrapper { background:#1C2733; }
+#subNav {
+    padding: 20px;
+    font-size:20px;
+    color:white;
+    font-weight: bold;
+    font-family: 'S-CoreDream-8Heavy', sans-serif;
+}
+#nav {
+    display:grid;
+    grid-template-columns: 4fr repeat(3, 2fr);
+    width:800px;
+} 
+
+#nav div, #nav a {
+    display:block;
+    padding:10px;
+    font-weight: bold;
+    line-height:50px;
+    vertical-align: middle;
+    color:white;
+    text-decoration: none;
+}
+#nav div { font-size:26px; }
+#nav a { text-align:center; }
+.main-header {
+    font-style:italic;
+}
+#nav a.router-link-exact-active {
+    background:#22c1d0;
+    color:white;
 }
 .wrapper {
     border-radius:2px;
@@ -22,7 +63,10 @@ body {
     border:1px solid #22c1d0;
     overflow:hidden;
     background:#191D26;
-    color : #4AB1B7;
+    color : #22c1d0;
+}
+.wrapper.secondary {
+    background:#1E2732;
 }
 .wrapper .title {
     display:block;
@@ -66,7 +110,6 @@ input[type=text]::placeholder { color:#aaa; }
 .line-label {
     display:block;
     position:relative;
-    color : #2b6f87;
     overflow:hidden;
     font-size:16px;
     margin:0;
@@ -91,7 +134,7 @@ input[type=button], button {
     min-width:100px;
     cursor:pointer;
 }
-.secondary {
+input[type=button].secondary, button.secondary {
     background:#FD2E5B !important;
 }
 .right-button {

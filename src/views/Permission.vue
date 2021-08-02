@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="title">
-      권한 관리
+      권한 목록
       <input type="button" value="생성" class="right-button" @click="onCreate()"/>
     </div>
     <div class="container">
