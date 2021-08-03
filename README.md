@@ -1,24 +1,12 @@
-# winsproject
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+# Authentication Broker page
+>Sniper Automation 에서 사용될 권한 및 인증 관리 페이지
+### 필요기능
+<pre>
+1. Bot이 접근할 장비
+	1-1. 장비의 계층 구조 구성
+	1-2. 장비 정보 제공 (테이블 / 계층 & 정보 박스로 제공)
+	1-3. 접근 정보 생성 / 삭제
+2. Bot에서 사용될 권한 관리
+	2-1. 권한 목록 확인
+	2-2. 권한 변경 (접근 정보 파일 목록 추가/삭제 & 권한 목록 수정)
+</pre>
