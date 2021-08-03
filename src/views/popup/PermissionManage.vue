@@ -91,11 +91,13 @@ export default {
           perm_list : ['create', 'delete', 'update', 'read', 'list'],
           checked : [false, false, false, false, false],
           roles : this.role,
-        modal_name : 'warning-modal-dept-2'
+        modal_name : 'warning-modal-dept-2',
+        selectedItem : null
       }
   },
   methods : {
     itemClick (node, item, e) {
+        this.selectedItem = node
         let now = node, path = `/${node.model.text}`
         while(now.$parent.model) {
             now = now.$parent
@@ -130,6 +132,9 @@ export default {
     },
     modal_onExit() { this.$modal.hide(this.modal_name) }
   },
+  beforeDestroy() {
+    if(this.selectedItem) this.selectedItem.model.selected = false
+  }
 }
 </script>
 

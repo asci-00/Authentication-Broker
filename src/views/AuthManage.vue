@@ -9,14 +9,13 @@
             <i class="fa fa-plus icon" @click="openPopup()"></i>
           </div>
           <div class="filter">
-            <select v-model="selected">
+            <select v-model="selectedCategory">
               <option
                 v-for="(item, idx) in category"
                 :key="idx"
                 :value="item.field"
+                >{{ item.label }}</option
               >
-                {{ item.label }}
-              </option>
             </select>
             <search-bar
               v-model="search"
@@ -30,6 +29,7 @@
           allow-batch
           whole-row
           @item-click="itemClick"
+          @init="setModelData"
           class="tree-wrapper scroll-container"
         />
       </div>
@@ -112,7 +112,7 @@
 </style>
 
 <script lang="ts">
-import VJstree from "vue-jstree";
+import VJstree from "@/local-module/VTree";
 import AuthCreate from "./popup/AuthCreate.vue";
 import { tree_data } from "@/modules/static/permission";
 import SearchBar from "@/components/SearchBar.vue";
@@ -128,15 +128,18 @@ export default {
         { field: "all", label: "전체" },
         { field: "sub", label: "하위" },
       ],
-      selected: "all",
+      selectedCategory: "all",
+      selectedItem: undefined,
       search: "",
       path: "",
       data_list: {},
       modal_name: "auth-manage-modal",
+      modal_data : {},
     };
   },
   methods: {
     itemClick(item) {
+      this.selectedItem = item;
       let now = item,
         path = `/${item.model.text}`;
       while (now.$parent.model) {
@@ -146,11 +149,36 @@ export default {
       this.data_list = item.model.info;
       this.path = path;
     },
+    setModelData(data) { this.model_data = data },
+    initModelData(model) {
+      model.highlight = false
+      model.children.forEach(child => this.initModelData(child))
+    },
     onApply(data) {},
     onDelete() {
       this.$modal.show(this.modal_name);
     },
-    onSearch(search) {},
+    onSearch(keyword) {
+      this.model_data.forEach(item => { this.initModelData(item) })
+
+      if(this.selectedCategory === 'all') this.model_data.forEach(item => { this.searchItem(item, keyword) })
+      else {
+        let start = this.selectedItem
+        if(start === undefined) return
+        if(start.model.folder === undefined) start = start.$parent
+
+        if(this.searchItem(start.model, keyword)) start.model.opend = true
+      }
+    },
+    searchItem(now, keyword) {
+      if(now.text.includes(keyword)) now.highlight = true;
+      if(now.folder && now.children.length) {
+        now.children.forEach(child => {
+          if(this.searchItem(child, keyword)) { now.opened = true }
+        })
+      }
+      return now.highlight
+    },
     openPopup() {
       this.$modal.show("auth-manage-popup");
     },
@@ -166,6 +194,10 @@ export default {
       this.$modal.hide(this.modal_name);
     },
   },
-  mounted() {},
+  mounted() { },
+  beforeDestroy() {
+    this.model_data.forEach(item => { this.initModelData(item) })
+    if(this.selectedItem) this.selectedItem.model.selected = false
+  }
 };
 </script>

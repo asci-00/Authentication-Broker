@@ -23,8 +23,8 @@ export default {
   methods: {
     onDelete() {
       this.$emit("delete");
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>
