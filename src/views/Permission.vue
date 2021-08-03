@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="title">
-      권한 관리
+      권한 목록
       <input type="button" value="생성" class="right-button" @click="onCreate()"/>
     </div>
     <div class="container">
@@ -114,7 +114,7 @@ export default {
             attrs : { type : 'button', value : '삭제', class : 'secondary' },
             on : { click : function() {
               _vm.resetButton = true
-              _vm.modal_message = '삭제 하시곘습니까?'
+              _vm.modal_message = '삭제 하시겠습니까?'
               _vm.$modal.show(_vm.modal_name)
             } } }, [])
         ])

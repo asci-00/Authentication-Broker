@@ -36,24 +36,27 @@ export const permission_data = [
 ]
 export const tree_data = [
   {
-    'text': 'external',
-    'opened': true,
-    'folder': true,
-    'children': [
-      { 'text': 'KT' },
-      { 'text': 'Hoseo',
-        'folder' : true,
-        'children' : [
-          { 'text': 'SSH:000.000.000.001', 'icon': 'fa fa-file', 'info' :
-          {ip : '000.000.000.1',
-          equip : 'EquipName',
-          host : 'HostName',
-          model : 'ModelName',
-          connect : 'SSH',
-          list  : [
-            {id : 'Port' ,value : '22'},
-            {id : 'ID' ,value : 'root'},
-            {id : 'Password' ,value : '123'}]}, },
+    "text": "external",
+    "opened": true,
+    "folder": true,
+    "children": [
+      { "text": "KT" },
+      { "text": "Hoseo",
+        "folder" : true,
+        "children" : [
+          { "text": "SSH:000.000.000.001", "icon": "fa fa-file", "info" :
+          {
+            ip : "000.000.000.1",
+            equip : "EquipName",
+            host : "HostName",
+            model : "ModelName",
+            connect : "API",
+            list  : [
+              {key : "Port" ,value : "22"},
+              {key : "ID" ,value : "root"},
+              {key : "Password" ,value : "123"}
+            ]
+          }},
         ]
       }
     ]
