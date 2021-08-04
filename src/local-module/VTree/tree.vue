@@ -32,6 +32,7 @@
     </div>
 </template>
 <script>
+/* eslint-disable */
     import TreeItem from './tree-item.vue'
 
     let ITEM_ID = 0
@@ -194,7 +195,8 @@
             },
             handleSingleSelectItems(oriNode, oriItem) {
                 this.handleRecursionNodeChilds(this, node => {
-                    if (node.model) node.model.selected = false
+                    if (node.model) 
+                        node.model.selected = false
                 })
                 oriNode.model.selected = true
             },

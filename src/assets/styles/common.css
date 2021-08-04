@@ -168,12 +168,17 @@ select:focus { border-color: #22C1D0; }
 .warning { width:300px; height:200px; line-height:100px;}
 .warning > div { text-align:center; vertical-align: middle;}
 /* input[type=radio] { position: absolute; display: none; }
+input[type=radio] + label {
+    line-height:40px;
+    height:40px;
+}
 input[type=radio] + label:before {
     content: "";
     background: #f4f4f4;
     border-radius: 100%;
     border: 1px solid #b4b4b4;
     display: inline-block;
+    vertical-align: middle;
     width: 1em;
     height: 1em;
     position: relative;
@@ -227,6 +232,7 @@ input[type=radio]:checked:disabled + label:before {
 .table-container .ve-table-body-td {
     background: #0D111C !important;
     color: white!important;
+    text-overflow: ellipsis;
     padding:0 10px !important;
 }
 .ve-pagination {

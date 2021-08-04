@@ -19,7 +19,7 @@
                             :columns="columns"
                             :table-data="roles"
                             :event-custom-option="{
-                                bodyRowEvents : ({row, rowIndex}) => ({click : event => onRowClick(row)})
+                                bodyRowEvents : ({row, rowIndex}) => ({click : event => onRowClick(row, rowIndex)})
                             }"
                             row-key-field-name="rowKey"
                             :cell-selection-option="{enable:true}"
@@ -81,18 +81,18 @@ export default {
         type : Array,
         default : () => []
     },
-//state : Object,
   },
   data() {
       return {
-          columns : permColumns,
-          per_name : this.name, path : '',
-          tree_data,
-          perm_list : ['create', 'delete', 'update', 'read', 'list'],
-          checked : [false, false, false, false, false],
-          roles : this.role,
+        columns : permColumns,
+        per_name : this.name, path : '',
+        tree_data,
+        perm_list : ['create', 'delete', 'update', 'read', 'list'],
+        checked : [false, false, false, false, false],
+        roles : this.role,
         modal_name : 'warning-modal-dept-2',
-        selectedItem : null
+        selectedItem : null,
+        selectedPathIdx : null
       }
   },
   methods : {
@@ -105,25 +105,42 @@ export default {
         }
         this.path = path
     },
-    onRowClick(rowData) {
-        this.checked = this.perm_list.map(item => rowData['permission'].includes(item))
+    onRowClick(rowData, idx) {
+        this.selectedPathIdx = idx
+        this.checked = this.perm_list.map(item => rowData['capabilities'].includes(item))
         this.path = rowData['path']
     },
     permChange (data) { this.checked = data },
     onApply() {
         if(this.path === "" || !this.checked.includes(true)) {console.log('err')}//error open
-        else this.roles.push({
-            path : this.path,
-            permission : this.perm_list.filter((i, idx) => this.checked[idx])
-        })
+        else {
+            if(this.selectedPathIdx) {
+                this.roles[this.selectedPathIdx] = {
+                    path : this.path,
+                    capabilities : this.perm_list.filter((i, idx) => this.checked[idx])
+                }
+            } else {
+                this.roles.push({
+                    path : this.path,
+                    capabilities : this.perm_list.filter((i, idx) => this.checked[idx])
+                })
+            }            
+        }
         this.init()
-    },
+    }, 
     init() {
         this.checked = this.perm_list.map(i => false)
+        if(this.selectedItem) this.selectedItem.model.selected = false
+        this.selectedItem = null
+        this.selectedPathIdx = null
         this.path = ""
     },
     onsubmit() {
-        this.$emit('submit', { list : this.roles })
+        const res = {path : {}}
+        this.roles.forEach(role => {
+            res['path'][role.path] = { capabilities : role.capabilities }
+        })
+        this.$emit('submit', {name : this.per_name, data : res})
     },
     onExit() { this.$modal.show(this.modal_name) },
     modal_onSubmit() {

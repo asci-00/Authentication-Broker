@@ -49,6 +49,7 @@
     </li>
 </template>
 <script>
+/* eslint-disable */
   export default {
       name: 'TreeItem',
       props: {

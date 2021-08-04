@@ -62,7 +62,10 @@
       category : Array,
       columns : Array,
       buttons : Array,
-      data : Array,
+      data : {
+        type : Array,
+        immediate: true,
+      },
     },
     data() {
       return {
@@ -106,6 +109,9 @@
           else this.searchedData = data.filter(item => item[selected].includes(search))
         } else this.searchedData = data.filter(item => filteringData(item, search))
       }
+    },
+    watch : {
+      data(new_val) { this.searchedData = this.data }
     }
   };
 </script>

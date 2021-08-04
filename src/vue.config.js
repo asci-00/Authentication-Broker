@@ -8,5 +8,7 @@ module.exports = {
             }
         }
     },
-    
+    pages : {
+        index : { title: 'Authentication Broker', }
+    }
 }

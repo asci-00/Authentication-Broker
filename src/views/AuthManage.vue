@@ -114,16 +114,18 @@
 <script lang="ts">
 import VJstree from "@/local-module/VTree";
 import AuthCreate from "./popup/AuthCreate.vue";
-import { tree_data } from "@/modules/static/permission";
+import { tree_data_example } from "@/modules/static/permission.js";
+import { objectToTree } from "@/modules/static/dataTransform";
 import SearchBar from "@/components/SearchBar.vue";
 import SettingCertiInfo from "@/components/SettingCertiInfo.vue";
 import Warning from "@/components/Warning";
+import * as Api from '@/apis/equipment.js'
 
 export default {
   components: { VJstree, SearchBar, AuthCreate, SettingCertiInfo, Warning },
   data() {
     return {
-      tree_data,
+      tree_data : [],
       category: [
         { field: "all", label: "전체" },
         { field: "sub", label: "하위" },
@@ -154,7 +156,15 @@ export default {
       model.highlight = false
       model.children.forEach(child => this.initModelData(child))
     },
-    onApply(data) {},
+    onApply(data) {
+      console.log(data)
+      Api.updateConnectionInfo(data.type, data.path, data.reqData)
+      .catch(err=>{ console.log(err) })
+      .then(res => {
+        this.closePopup()
+      })
+      
+    },
     onDelete() {
       this.$modal.show(this.modal_name);
     },
@@ -179,12 +189,8 @@ export default {
       }
       return now.highlight
     },
-    openPopup() {
-      this.$modal.show("auth-manage-popup");
-    },
-    closePopup() {
-      this.$modal.hide("auth-manage-popup");
-    },
+    openPopup() { this.$modal.show("auth-manage-popup") },
+    closePopup() { this.$modal.hide("auth-manage-popup") },
 
     modal_onSubmit() {
       //삭제처리
@@ -194,10 +200,16 @@ export default {
       this.$modal.hide(this.modal_name);
     },
   },
-  mounted() { },
+  created() {
+    Api.getTreeEquipList().then(res => {
+      //this.tree_data = objectToTree(res.data)
+      this.tree_data = tree_data_example
+      console.log(this.tree_data)
+    })    
+  },
   beforeDestroy() {
     this.model_data.forEach(item => { this.initModelData(item) })
     if(this.selectedItem) this.selectedItem.model.selected = false
-  }
+  },
 };
 </script>

@@ -9,6 +9,7 @@
       :category="category"
       :columns="columns"
       :data="data"
+      v-if="data.length"
       />
     </div>
   </div>
@@ -22,18 +23,24 @@
 
 <script lang="ts">
 import Table from '@/components/Table.vue'; // @ is an alias to /src
-import {category, columns, data} from '@/modules/static/equipment'
+import {category, columns } from '@/modules/static/equipment'
+import * as Api from '@/apis/equipment.js'
 
 export default {
   components: { Table, },
   data() {
     return {
-      data, category, 
+      data : [], category, 
       columns
     }
   },
   methods : {
     buttonClick() { this.$router.push('/auth') }
   },
+  created() {
+    Api.getEquipList().then(res => {
+      this.data = [...res.data['internal'], ...res.data['external']]
+    })
+  }
 }
 </script>

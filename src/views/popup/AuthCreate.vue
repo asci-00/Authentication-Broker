@@ -5,22 +5,22 @@
       <div>
         <input
           v-model="infos.type"
-          id="set-auth"
+          id="set-internal"
           type="radio"
           name="type"
-          value="auth"
-        /><label for="set-auth">인증 정보</label>
+          value="internal"
+        /><label for="set-internal">Internal</label>
       </div>
       <div>
         <input
           v-model="infos.type"
-          id="set-customer"
+          id="set-external"
           type="radio"
           name="type"
-          value="customer"
-        /><label for="set-customer">고객사</label>
+          value="external"
+        /><label for="set-external">External</label>
       </div>
-      <input type="text" name="customer" placeholder="고객사명" :disabled="!isCustomer"/>
+      <input type="text" name="customer" v-show="infos.type === 'external'" v-model="infos.customer_name" placeholder="고객사명"/>
     </div>
     <section class="container">
       <div class="inner-container">
@@ -28,8 +28,8 @@
           <div class="title secondary">필수 정보</div>
           <ul class="list-box info-list">
             <li v-for="(info, idx) in infos.required_info" :key="idx">
-              <label :for="info.id">{{info.label}}</label>
-              <input :id="info.id" :placeholder="info.label" v-model="info.value" type="text" :disabled="isCustomer"/>
+              <label :for="info.key">{{info.label}}</label>
+              <input :id="info.key" :placeholder="info.label" v-model="info.value" type="text"/>
             </li>
           </ul>
         </div>
@@ -44,7 +44,6 @@
                 <input
                   :id="type"
                   :value="type"
-                  :disabled="isCustomer"
                   type="radio"
                   name="connect-type"
                   v-model="infos.connect_type"
@@ -54,7 +53,7 @@
             <ul class="list-box config-list">
               <li class="list-title"><span>Key</span><span>Value</span></li>
               <li v-for="(connect, idx) in infos.connect_info" :key="idx">
-                <select v-model="connect.key" value="none" :disabled="isCustomer">
+                <select v-model="connect.key" value="none">
                   <option value="none">none</option>
                   <option 
                     v-for="(key, idx) in connect_keys" 
@@ -62,7 +61,7 @@
                     :disabled="infos.connect_info.map(item=>item.key).includes(key)"
                     :key="idx">{{key}}</option>
                 </select>
-                <input v-model="connect.value" type="text" placeholder="input value" :disabled="isCustomer || (connect.key === 'none')"/>
+                <input v-model="connect.value" type="text" placeholder="input value" :disabled="connect.key === 'none'"/>
               </li>
             </ul>
           </section>
@@ -98,12 +97,12 @@ export default {
       modal_reset: true,
       modal_submit: true,
       infos: {
-        type: "auth",
+        type: 'internal',
         required_info: [
-          { id: "ip", value: "", label: "IP 주소" },
-          { id: "equip", value: "", label: "장비 이름" },
-          { id: "host", value: "", label: "호스트 이름" },
-          { id: "model", value: "", label: "모델 이름" },
+          { key: "ip", value: "", label: "IP 주소" },
+          { key: "equip", value: "", label: "장비 이름" },
+          { key: "host", value: "", label: "호스트 이름" },
+          { key: "model", value: "", label: "모델 이름" },
         ],
         connect_type : 'SSH',
         connect_info: [
@@ -111,19 +110,45 @@ export default {
           {key : 'none', value : ''},
           {key : 'none', value : ''}
         ],
+        customer_name : '',
+        path : ''
       },
       connection : ['SSH', 'API', 'HMAC', 'GUI'],
       connect_keys : ['ID', 'Password', 'key_MAC', 'token_MAC'],
     };
   },
   computed : {
-    isCustomer() { return (this.infos.type === 'customer') }
   },
   methods: {
+    isAvailable(type) {
+      const [ip, equip] = this.infos.required_info, name = this.infos.customer_name
+
+      if(type === 'internal' && (ip['value'] == '' || equip['value'] == '')) return false
+      if(type === 'external' && (ip['value'] == '' || name == '')) return false
+      return true
+    },
     onsubmit() {
       //입력 유효성 검증
-      console.log(this.infos)
-      this.$emit("submit", { info: this.infos });
+      if(this.isAvailable(this.infos.type)) {
+        //path 생성
+        if(this.infos.type === 'internal')  
+          this.infos.path = this.infos.required_info[1]['value']
+        else 
+          this.infos.path = this.infos.customer_name + `/${this.infos.connect_type}:${this.infos.required_info[0]['value']}`
+        //key-value 생성
+        const reqData = {data : {}}
+        this.infos.required_info.forEach(item => {
+          if(item['value'] !== '') reqData['data'][item['key']] = item['value']
+        })
+        this.infos.connect_info.forEach(item => {
+          if(item['key'] !== 'none' && item['value'] !== '') 
+            reqData['data'][item['key']] = item['value']
+        })
+        this.$emit("submit", {...this.infos, reqData})
+      }
+      else {
+        console.log('is not avail')
+      }
     },
     onExit() {
       this.$modal.show(this.modal_name);

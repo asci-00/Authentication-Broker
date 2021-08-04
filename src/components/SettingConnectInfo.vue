@@ -31,9 +31,7 @@
 <script>
 export default {
   created() {
-    console.log(this.props)
     this.key_values.forEach((item, idx) => {this.key_values[idx] = this.props.list[idx]} )
-    console.log(this.key_values)
   },
   props: { props: Object, },
   data() {
