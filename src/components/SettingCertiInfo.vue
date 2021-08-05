@@ -31,6 +31,7 @@ export default {
           const { customerIp : ip, protocol : connect, model, host, equip } = data
           const { ...list} = data.list
           this.data = { ip, connect, model, host, equip, list }
+          console.log(this.data)
         }
       }
   },

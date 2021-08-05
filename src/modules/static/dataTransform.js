@@ -1,15 +1,17 @@
+const list_key = ['ID', 'Password', 'key_MAC', 'token_MAC']
+
 const getTreeLeafNode = (obj) => {
     const { customerIp, protocol } = obj
     const { model, host, equip, ...list} = obj['data']
 
+    console.log()
     return {
         "text" : protocol ? `${protocol}:${customerIp}` : customerIp,
         "icon": "fa fa-file" ,
         "info" : {
             customerIp, protocol, model, host, equip,
-            list : Object.keys(list).map(item_key => ({
-                key : item_key,
-                value : list[item_key]    
+            list : list_key.filter(key => list[key]).map(key => ({
+                key, value : list[key]
             }))
         }
     }
@@ -24,6 +26,7 @@ const getTreeSubNode = (parent) => {
 }
 
 export const objectToTree = (obj) => {
+    console.log(obj)
     return [
         {
             "text" : "external",

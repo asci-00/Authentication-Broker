@@ -195,6 +195,7 @@ export default {
   created() {
     Api.getTreeEquipList().then(res => {
       this.tree_data = objectToTree(res.data)
+      console.log(this.tree_data)
     }).catch(err=>this.$alert('관리자에게 문의해주세요', 'Error'))
   },
   beforeDestroy() {
