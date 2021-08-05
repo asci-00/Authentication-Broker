@@ -65,6 +65,11 @@ body {
     background:#191D26;
     color : #22c1d0;
 }
+.content.primary { 
+    min-height:60px; 
+    line-height:60px; vertical-align: middle;
+    color : #22c1d0 !important; 
+}
 .wrapper.secondary {
     background:#1E2732;
 }
@@ -126,16 +131,26 @@ input[type=text]::placeholder { color:#aaa; }
     top:51%;
     background:#2b6f87;
 }
+
 input[type=button], button {
-    background:#22c1d0;
-    border:none;
+    border:none !important;
+    border-radius: 0 !important;
     color:white;
-    padding:5px;
-    min-width:100px;
+    padding:5px !important;
+    min-width:80px;
     cursor:pointer;
 }
-input[type=button].secondary, button.secondary {
-    background:#FD2E5B !important;
+input[type=button].secondary, button.secondary { background:#FD2E5B !important; }
+input[type=button].primary, button.primary { background:#22c1d0 !important; }
+.small { 
+    width:20px !important;
+    min-width:20px !important;
+}
+.content-small {
+     width:250px; 
+     text-overflow: ellipsis;
+     overflow:hidden;
+     white-space: nowrap;
 }
 .right-button {
     border:1px solid #22c1d0 !important;
@@ -222,17 +237,19 @@ input[type=radio]:checked:disabled + label:before {
     position:relative;
     top : -3px;
 }
+.modal-table .ve-table-container {
+    max-width:323.45px;
+}
 .table-container .ve-table-header th {
     border-bottom: none !important;
     padding: 0 10px !important;
 }
 .table-container .ve-table-body tr:not(:first-child) td { border:1px solid #203C59 !important; }
 .table-container .ve-table-body tr td:not(:last-child) { border-right:none !important; }
-.table-container .ve-table-body tr td:not(:first-child) { border-left:none !important; }
+.table-container .ve-table-body tr td:not(:first-child ) { border-left:none !important; }
 .table-container .ve-table-body-td {
     background: #0D111C !important;
     color: white!important;
-    text-overflow: ellipsis;
     padding:0 10px !important;
 }
 .ve-pagination {
