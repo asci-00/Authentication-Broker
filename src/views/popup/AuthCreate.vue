@@ -69,8 +69,8 @@
       </div>
     </section>
     <footer class="button-box">
-      <button class="submit" @click="onsubmit()">확인</button>
-      <button class="reset secondary" @click="onExit()">취소</button>
+      <button class="primary" @click="onsubmit()">확인</button>
+      <button class="secondary" @click="onExit()">취소</button>
     </footer>
     <warning
       :submit="modal_reset"

@@ -46,22 +46,15 @@
                     </div>
                     <footer class="foot-box">
                         <input type="text" v-model="path" placeholder="input path"/>
-                        <input type="button" @click="onApply()" value="적용"/>
+                        <input type="button" @click="onApply()" value="적용" class="primary"/>
                     </footer>
                 </div>
             </div>
         </section>
         <footer class="button-box">
-            <button class="submit" @click="onsubmit()">확인</button>
-            <button class="reset secondary" @click="onExit()">취소</button>
+            <button class="primary" @click="onsubmit()">확인</button>
+            <button class="secondary" @click="onExit()">취소</button>
         </footer>
-        <warning
-            :submit="true"
-            :name="modal_name"
-            :reset="true"
-            message="취소하시겠습니까?"
-            @click="modal_onSubmit()"
-            @close="modal_onExit()"/>
     </div>
 </template>
 
@@ -69,10 +62,9 @@
 import VJstree from 'vue-jstree'
 import VCheckList from '@/components/CheckList'
 import {permColumns, tree_data} from '@/modules/static/permission'
-import Warning from '@/components/Warning'
 
 export default {
-  components : { VJstree, VCheckList, Warning },
+  components : { VJstree, VCheckList },
   props : {
     title : String,
     guideMessage : String,
@@ -90,7 +82,6 @@ export default {
         perm_list : ['create', 'delete', 'update', 'read', 'list'],
         checked : [false, false, false, false, false],
         roles : this.role,
-        modal_name : 'warning-modal-dept-2',
         selectedItem : null,
         selectedPathIdx : null
       }
@@ -142,24 +133,21 @@ export default {
         })
         this.$emit('submit', {name : this.per_name, data : res})
     },
-    onDelete(idx) {
-        this.roles.splice(idx, 1)
+    onDelete(idx) { this.roles.splice(idx, 1) },
+    onExit() { 
+        this.$confirm('취소하시겠습니까?')
+        .then(res => this.$emit('close'))
+        .catch(err=>{})
     },
-    onExit() { this.$modal.show(this.modal_name) },
-    modal_onSubmit() {
-        this.$modal.hide(this.modal_name)
-        this.$emit('close')
-    },
-    modal_onExit() { this.$modal.hide(this.modal_name) }
   },
   created() {
       const _vm = this
 
       this.columns = [...this.columns, {
-      key : '2', field : 'buttons', title : '', align:'right', 
+      key : '2', field : 'buttons', title : '', align:'right', width: 20,
       renderBodyCell: ({ row, column, rowIndex }, h) => {
         return h( "input", {
-                attrs: { type: "button", value: "삭제", class:'small' },
+                attrs: { type: "button", value: "X", class:'small secondary' },
                 on: {
                   click: function(ev) {
                     ev.stopPropagation()

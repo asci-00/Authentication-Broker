@@ -8,7 +8,7 @@ module.exports = {
             }
         }
     },
-    pages : {
-        index : { title: 'Authentication Broker', }
+    devServer: {
+        host:'localhost'
     }
 }

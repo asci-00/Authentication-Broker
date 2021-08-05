@@ -7,7 +7,8 @@ export const columns = [
   { key: '4', field: 'actions', title: '동작', width: 100 }
 ]
 export const permColumns = [
-  { key: '1', field: 'path', title: '경로', align: 'left' }
+  { key: '1', field: 'path', title: '경로', align: 'left', width: 100,
+  renderBodyCell: ({ row, column, rowIndex }, h) => (<div class="content-small">{row['path']}</div>) }
 ]
 
 //develop code
