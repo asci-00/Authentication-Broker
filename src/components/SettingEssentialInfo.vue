@@ -18,11 +18,7 @@
 
 <script>
 export default {
-  created() {
-    this.items = this.items.map(item => ({ 
-      ...item, value: this.props[item.id] 
-    }))
-  },
+  created() { this.init(this.props) },
   props: {
     props: Object,
   },
@@ -36,6 +32,19 @@ export default {
       ],
     };
   },
+  methods : {
+    init(data) {
+      this.items = this.items.map(item => ({
+        ...item, value: data[item.id]
+      }))
+    }
+  },
+  watch : {
+    props : {
+      immediate : true,
+      handler(data) { this.init(data) }
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>

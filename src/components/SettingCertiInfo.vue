@@ -1,9 +1,9 @@
 <template>
   <div class="setting">
-    <div class="certi-info" v-if="infoList && infoList.ip">
-      <setting-essential-info :props="infoList" />
+    <div class="certi-info" v-if="isFile">
+      <setting-essential-info :props="data" />
       <div class="div"></div>
-      <setting-connect-info :props="infoList" />
+      <setting-connect-info :props="data" />
       <div class="right-algin">
         <button class="reset secondary" @click="onDelete">삭제</button>
       </div>
@@ -19,12 +19,31 @@ export default {
   props: { infoList: Object },
 
   components: { SettingConnectInfo, SettingEssentialInfo },
-
-  methods: {
-    onDelete() {
-      this.$emit("delete");
+  data() {
+    return {
+      data : {}
     }
-  }
+  },
+  methods: {
+    onDelete() { this.$emit("delete") },
+    init(data) {
+        if(data && data['customerIp']) {
+          const { customerIp : ip, protocol : connect } = data
+          const { model, host, equip, ...list} = data.list
+          this.data = { ip, connect, model, host, equip, list }
+        }
+      }
+  },
+  computed : {
+    isFile() { return (this.infoList && this.infoList['customerIp']) }
+  },
+  watch : {
+    infoList : {
+      immediate : true,
+      handler(newData) { this.init(newData) }
+    }
+  },
+  created() { this.init(this.infoList) }
 };
 </script>
 <style scoped>

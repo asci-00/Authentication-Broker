@@ -2,7 +2,7 @@
     <div class="wrapper">
         <div class="title">{{title}}</div>
         <div class="guide-msg">{{guideMessage}}</div>
-        <section class="container">
+        <section class="left-container">
             <div class="inner-container right-border">
                 <div class="label-content">
                     <label>권한명</label>
@@ -37,7 +37,9 @@
                             :data="tree_data"
                             allow-batch whole-row
                             @item-click="itemClick"
-                            class="tree-wrapper scroll-container"/>
+                            class="tree-wrapper scroll-container"
+                            v-if="tree_data.length"
+                            />
                       </div>
                       <div>
                         <h2 class="line-label"><span>권한</span></h2>
@@ -58,10 +60,53 @@
     </div>
 </template>
 
+<style lang="scss" scoped>
+.wrapper {
+    width:900px;
+    & .guide-msg {
+        padding-left:10px;
+        margin-bottom:10px;
+    }
+}
+.left-container {
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap : 0;
+    border-bottom:1px solid grey;
+
+    & .inner-container {
+        padding:10px;
+        &.right-border { border-right:1px solid grey; }
+        & .label-content {
+            display:grid;
+            grid-template-columns: 2fr 6fr;
+            margin-bottom:20px;
+            & .icon {
+                display:inline-block;
+                margin-left:5px;
+            }
+        }
+        & .head-box {
+            display:grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap:10px;
+        }
+        & .foot-box {
+            display:grid;
+            grid-template-columns: 6fr 2fr;
+            grid-gap:10px;
+        }
+    }
+}
+.table-wrapper { min-height:310px; border-bottom:1px solid grey; }
+</style>
+
 <script>
 import VJstree from 'vue-jstree'
 import VCheckList from '@/components/CheckList'
-import {permColumns, tree_data} from '@/modules/static/permission'
+import { permColumns } from '@/modules/static/permission'
+import { objectToTree } from "@/modules/static/dataTransform";
+import * as Api from '@/apis/equipment.js'
 
 export default {
   components : { VJstree, VCheckList },
@@ -78,7 +123,7 @@ export default {
       return {
         columns : permColumns,
         per_name : this.name, path : '',
-        tree_data,
+        tree_data : [],
         perm_list : ['create', 'delete', 'update', 'read', 'list'],
         checked : [false, false, false, false, false],
         roles : this.role,
@@ -115,10 +160,10 @@ export default {
                     path : this.path,
                     capabilities : this.perm_list.filter((i, idx) => this.checked[idx])
                 })
-            }            
+            }
         }
         this.init()
-    }, 
+    },
     init() {
         this.checked = this.perm_list.map(i => false)
         if(this.selectedItem) this.selectedItem.model.selected = false
@@ -134,7 +179,7 @@ export default {
         this.$emit('submit', {name : this.per_name, data : res})
     },
     onDelete(idx) { this.roles.splice(idx, 1) },
-    onExit() { 
+    onExit() {
         this.$confirm('취소하시겠습니까?')
         .then(res => this.$emit('close'))
         .catch(err=>{})
@@ -158,50 +203,13 @@ export default {
             )
       }
     }]
+
+    Api.getTreeEquipList().then(res => {
+      this.tree_data = objectToTree(res.data)
+    }).catch(err=>this.$alert('관리자에게 문의해주세요', 'Error'))
   },
   beforeDestroy() {
     if(this.selectedItem) this.selectedItem.model.selected = false
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.wrapper {
-    width:900px;
-    & .guide-msg {
-        padding-left:10px;
-        margin-bottom:10px;
-    }
-}
-.container {
-    display:grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap : 0;
-    border-bottom:1px solid grey;
-
-    & .inner-container {
-        padding:10px;
-        &.right-border { border-right:1px solid grey; }
-        & .label-content {
-            display:grid;
-            grid-template-columns: 2fr 6fr;
-            margin-bottom:20px;
-            & .icon {
-                display:inline-block;
-                margin-left:5px;
-            }
-        }
-        & .head-box {
-            display:grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-gap:10px;
-        }
-        & .foot-box {
-            display:grid;
-            grid-template-columns: 6fr 2fr;
-            grid-gap:10px;
-        }
-    }
-}
-.table-wrapper { min-height:310px; border-bottom:1px solid grey; }
-</style>

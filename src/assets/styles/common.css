@@ -65,10 +65,10 @@ body {
     background:#191D26;
     color : #22c1d0;
 }
-.content.primary { 
-    min-height:60px; 
+.content.primary {
+    min-height:60px;
     line-height:60px; vertical-align: middle;
-    color : #22c1d0 !important; 
+    color : #22c1d0 !important;
 }
 .wrapper.secondary {
     background:#1E2732;
@@ -139,15 +139,16 @@ input[type=button], button {
     padding:5px !important;
     min-width:80px;
     cursor:pointer;
+    outline:none;
 }
 input[type=button].secondary, button.secondary { background:#FD2E5B !important; }
 input[type=button].primary, button.primary { background:#22c1d0 !important; }
-.small { 
+.small {
     width:20px !important;
     min-width:20px !important;
 }
 .content-small {
-     width:250px; 
+     width:250px;
      text-overflow: ellipsis;
      overflow:hidden;
      white-space: nowrap;

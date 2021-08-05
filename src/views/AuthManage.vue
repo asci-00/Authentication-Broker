@@ -26,6 +26,7 @@
         </div>
         <v-jstree
           :data="tree_data"
+          v-if="tree_data.length"
           allow-batch
           whole-row
           @item-click="itemClick"
@@ -50,79 +51,73 @@
     >
       <auth-create @submit="onApply" @close="closePopup()" />
     </modal>
-    <warning
-      :name="modal_name"
-      message="삭제하시겠습니까?"
-      @click="modal_onSubmit()"
-      @close="modal_onExit()"
-    />
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 .container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 0;
-  min-width: 960px;
-  & .half-container {
-    padding: 10px;
-    width: calc(100% - 20px);
-    & .head {
-      position: relative;
-      margin-bottom: 10px;
-      & .inner-box-title {
-        float: left;
-      }
-      & .filter {
-        position: relative;
-        float: right;
-      }
-      &:after {
-        content: " ";
-        display: block;
-        clear: both;
-      }
-    }
-    & .setting-box {
-      margin-bottom: 10px;
-    }
-    & .inner-box-title {
-      min-height: 35px;
-      line-height: 35px;
-      vertical-align: middle;
-    }
-  }
-  & .foot-box {
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-    & .info-text {
-      padding-top: 3px;
-    }
-    & .button-box {
-      text-align: right;
-    }
-  }
-  & .tree-wrapper {
-    min-height: 400px;
-    height: calc(100% - 60px);
-  }
+	 display: grid;
+	 grid-template-columns: 1fr 1fr;
+	 grid-gap: 0;
+	 min-width: 960px;
 }
+ .container .half-container {
+	 padding: 10px;
+	 width: calc(100% - 20px);
+}
+ .container .half-container .head {
+	 position: relative;
+	 margin-bottom: 10px;
+}
+ .container .half-container .head .inner-box-title {
+	 float: left;
+}
+ .container .half-container .head .filter {
+	 position: relative;
+	 float: right;
+}
+ .container .half-container .head:after {
+	 content: " ";
+	 display: block;
+	 clear: both;
+}
+ .container .half-container .setting-box {
+	 margin-bottom: 10px;
+}
+ .container .half-container .inner-box-title {
+	 min-height: 35px;
+	 line-height: 35px;
+	 vertical-align: middle;
+}
+ .container .foot-box {
+	 display: grid;
+	 grid-template-columns: 1fr 3fr;
+}
+ .container .foot-box .info-text {
+	 padding-top: 3px;
+}
+ .container .foot-box .button-box {
+	 text-align: right;
+}
+ .container .tree-wrapper {
+	 min-height: 400px;
+	 height: calc(100% - 60px);
+}
+
 
 </style>
 
 <script lang="ts">
 import VJstree from "@/local-module/VTree";
 import AuthCreate from "./popup/AuthCreate.vue";
-import { tree_data_example } from "@/modules/static/permission.js";
+import { tree_data_example2 } from "@/modules/static/permission.js";
 import { objectToTree } from "@/modules/static/dataTransform";
 import SearchBar from "@/components/SearchBar.vue";
 import SettingCertiInfo from "@/components/SettingCertiInfo.vue";
-import Warning from "@/components/Warning";
 import * as Api from '@/apis/equipment.js'
 
 export default {
-  components: { VJstree, SearchBar, AuthCreate, SettingCertiInfo, Warning },
+  components: { VJstree, SearchBar, AuthCreate, SettingCertiInfo },
   data() {
     return {
       tree_data : [],
@@ -134,9 +129,7 @@ export default {
       selectedItem: undefined,
       search: "",
       path: "",
-      data_list: {},
-      modal_name: "auth-manage-modal",
-      modal_data : {},
+      data_list: null,
     };
   },
   methods: {
@@ -157,16 +150,21 @@ export default {
       model.children.forEach(child => this.initModelData(child))
     },
     onApply(data) {
-      console.log(data)
-      Api.updateConnectionInfo(data.type, data.path, data.reqData)
-      .catch(err=>{ console.log(err) })
+      Api.updateConnectionInfo(data.type, data.path, data.reqData).then(res=>this.$alert('적용되었습니다.'))
+      .catch(err=>{
+        this.$alert('관리자에게 문의해주세요', 'Error')
+       })
       .then(res => {
+
         this.closePopup()
       })
-      
+
     },
     onDelete() {
-      this.$modal.show(this.modal_name);
+      const { protocol , customerIp } = this.selectedItem.model.info
+      this.$confirm('삭제하시겠습니까?')
+        .then(res => Api.deleteConnectionInfo(protocol, customerIp).catch(err=>this.$alert('관리자에게 문의해주세요', 'Error')))
+        .catch(err=>{})
     },
     onSearch(keyword) {
       this.model_data.forEach(item => { this.initModelData(item) })
@@ -192,20 +190,11 @@ export default {
     openPopup() { this.$modal.show("auth-manage-popup") },
     closePopup() { this.$modal.hide("auth-manage-popup") },
 
-    modal_onSubmit() {
-      //삭제처리
-      this.modal_onExit();
-    },
-    modal_onExit() {
-      this.$modal.hide(this.modal_name);
-    },
   },
   created() {
     Api.getTreeEquipList().then(res => {
-      //this.tree_data = objectToTree(res.data)
-      this.tree_data = tree_data_example
-      console.log(this.tree_data)
-    })    
+      this.tree_data = objectToTree(res.data)
+    }).catch(err=>this.$alert('관리자에게 문의해주세요', 'Error'))
   },
   beforeDestroy() {
     this.model_data.forEach(item => { this.initModelData(item) })

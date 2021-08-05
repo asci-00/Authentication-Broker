@@ -80,7 +80,7 @@ export default {
           role : rolesData
         }
         this.$modal.show("modal");
-      })
+      }).catch(err=>this.$alert('관리자에게 문의해주세요', 'Error'))
     },
     onCreate() {
       this.props = {
@@ -94,10 +94,10 @@ export default {
       Api.updatePolicyInfo(name, res).then(res => {
         this.init()
         this.$alert('적용되었습니다.').then(res => this.$modal.hide("modal"))
-      }).catch(err => console.log(err))
+      }).catch(err => this.$alert('관리자에게 문의해주세요', 'Error'))
     },
-    onDelete(name) { 
-      Api.deletePolicy(name).catch(err=>console.log(err)).then(res => {this.init()})
+    onDelete(name) {
+      Api.deletePolicy(name).catch(err=>this.$alert('관리자에게 문의해주세요', 'Error')).then(res => {this.init()})
     },
     onModalClose(name) { this.$modal.hide(name); },
     init() {
@@ -105,7 +105,7 @@ export default {
       return Api.getPolicyList().then(res => {
         const list = res.data.policies
         this.data = list.map(name => ({name}))
-      })
+      }).catch(err=>this.$alert('관리자에게 문의해주세요', 'Error'))
     }
   },
   created() {

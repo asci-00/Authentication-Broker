@@ -37,6 +37,8 @@ export default {
 
 <style lang="scss" scoped>
 .checked-wrapper {
+  display:grid;
+  grid-template-rows:repeat(5, 1fr);
   padding: 10px;
   margin: 5px 0;
   min-height: 300px;

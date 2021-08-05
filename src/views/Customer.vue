@@ -30,7 +30,7 @@ export default {
   components: { Table, },
   data() {
     return {
-      data : [], category, 
+      data : [], category,
       columns
     }
   },
@@ -40,7 +40,7 @@ export default {
   created() {
     Api.getEquipList().then(res => {
       this.data = [...res.data['internal'], ...res.data['external']]
-    })
+    }).catch(err=>this.$alert('관리자에게 문의해주세요', 'Error'))
   }
 }
 </script>

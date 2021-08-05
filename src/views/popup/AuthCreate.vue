@@ -55,8 +55,8 @@
               <li v-for="(connect, idx) in infos.connect_info" :key="idx">
                 <select v-model="connect.key" value="none">
                   <option value="none">none</option>
-                  <option 
-                    v-for="(key, idx) in connect_keys" 
+                  <option
+                    v-for="(key, idx) in connect_keys"
                     :value="key"
                     :disabled="infos.connect_info.map(item=>item.key).includes(key)"
                     :key="idx">{{key}}</option>
@@ -72,30 +72,17 @@
       <button class="primary" @click="onsubmit()">확인</button>
       <button class="secondary" @click="onExit()">취소</button>
     </footer>
-    <warning
-      :submit="modal_reset"
-      :reset="modal_submit"
-      :name="modal_name"
-      :message="`취소하시겠습니까?`"
-      @click="modal_onSubmit()"
-      @close="modal_onExit()"
-    />
   </div>
 </template>
 
 <script>
-import Warning from "@/components/Warning";
 
 export default {
-  components: { Warning },
   props: {
     //state : Object,
   },
   data() {
     return {
-      modal_name: "auth-create-modal-depth-1",
-      modal_reset: true,
-      modal_submit: true,
       infos: {
         type: 'internal',
         required_info: [
@@ -104,7 +91,7 @@ export default {
           { key: "host", value: "", label: "호스트 이름" },
           { key: "model", value: "", label: "모델 이름" },
         ],
-        connect_type : 'SSH',
+        connect_type : '',
         connect_info: [
           {key : 'none', value : ''},
           {key : 'none', value : ''},
@@ -131,9 +118,9 @@ export default {
       //입력 유효성 검증
       if(this.isAvailable(this.infos.type)) {
         //path 생성
-        if(this.infos.type === 'internal')  
+        if(this.infos.type === 'internal')
           this.infos.path = this.infos.required_info[1]['value']
-        else 
+        else
           this.infos.path = this.infos.customer_name + `/${this.infos.connect_type}:${this.infos.required_info[0]['value']}`
         //key-value 생성
         const reqData = {data : {}}
@@ -141,7 +128,7 @@ export default {
           if(item['value'] !== '') reqData['data'][item['key']] = item['value']
         })
         this.infos.connect_info.forEach(item => {
-          if(item['key'] !== 'none' && item['value'] !== '') 
+          if(item['key'] !== 'none' && item['value'] !== '')
             reqData['data'][item['key']] = item['value']
         })
         this.$emit("submit", {...this.infos, reqData})
@@ -151,70 +138,65 @@ export default {
       }
     },
     onExit() {
-      this.$modal.show(this.modal_name);
-    },
-    modal_onSubmit() {
-      this.$modal.hide(this.modal_name);
-      this.$emit("close");
-    },
-    modal_onExit() {
-      this.$modal.hide(this.modal_name);
+      this.$confirm('취소하시겠습니까?')
+        .then(res => this.$emit("close"))
+        .catch(err=>{})
     },
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .guide-box {
-  margin: 10px;
-  height: 40px;
-  line-height: 40px;
-  vertical-align: middle;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  width: 300px;
+	 margin: 10px;
+	 height: 40px;
+	 line-height: 40px;
+	 vertical-align: middle;
+	 display: grid;
+	 grid-template-columns: repeat(3, 1fr);
+	 width: 300px;
 }
-.container {
-  display: grid;
-  grid-template-columns: 2fr 3fr;
-  grid-gap: 10px;
-  height: auto;
-  & .inner-container {
-    padding: 10px;
-    & .wrapper {
-      min-height: 300px;
-    }
-    & .info-list {
-      padding: 10px;
-      & li {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        &:not(:last-child) {
-          margin-bottom: 10px;
-        }
-        & label {
-          line-height: 37px;
-          vertical-align: middle;
-        }
-      }
-    }
-    & .connect-info {
-      padding: 10px;
-      display: grid;
-      grid-template-columns: 2fr 3fr;
-      & li:not(:last-child) {
-        margin-bottom: 10px;
-      }
+ .container {
+	 display: grid;
+	 grid-template-columns: 2fr 3fr;
+	 grid-gap: 10px;
+	 height: auto;
+}
+ .container .inner-container {
+	 padding: 10px;
+}
+ .container .inner-container .wrapper {
+	 min-height: 300px;
+}
+ .container .inner-container .info-list {
+	 padding: 10px;
+}
+ .container .inner-container .info-list li {
+	 display: grid;
+	 grid-template-columns: repeat(2, 1fr);
+}
+ .container .inner-container .info-list li:not(:last-child) {
+	 margin-bottom: 10px;
+}
+ .container .inner-container .info-list li label {
+	 line-height: 37px;
+	 vertical-align: middle;
+}
+ .container .inner-container .connect-info {
+	 padding: 10px;
+	 display: grid;
+	 grid-template-columns: 2fr 3fr;
+}
+ .container .inner-container .connect-info li:not(:last-child) {
+	 margin-bottom: 10px;
+}
+ .container .inner-container .connect-info .list-title {
+	 margin-bottom: 15px;
+}
+ .container .inner-container .connect-info .config-list li {
+	 display: grid;
+	 grid-gap: 5px;
+	 grid-template-columns: 2fr 3fr;
+}
 
-      & .list-title {
-        margin-bottom: 15px;
-      }
-      & .config-list li {
-        display: grid;
-        grid-gap: 5px;
-        grid-template-columns: 2fr 3fr;
-      }
-    }
-  }
-}
 </style>
