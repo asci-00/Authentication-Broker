@@ -6,6 +6,12 @@
     </section>
   </div>
 </template>
+<style lang="scss">
+@import '@/assets/styles/common.scss';
+@import '@/assets/styles/layout.scss';
+@import '@/assets/styles/table.scss';
+@import '@/assets/styles/tree.scss';
+</style>
 <script>
 import { routes } from '@/router/'
 import ViewNavigation from './views/Navigation.vue'

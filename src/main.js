@@ -7,11 +7,10 @@ import VueSimpleAlert from "vue-simple-alert";
 import VModal from 'vue-js-modal'
 import VueEasytable from "vue-easytable";
 import "vue-easytable/libs/theme-default/index.css";
-import "@/assets/styles/common.css"
 
 Vue.config.productionTip = false
 Vue.use(VueEasytable)
-Vue.use(VueSimpleAlert, { 
+Vue.use(VueSimpleAlert, {
   customClass : {
     popup:'wrapper',
     content:'content primary',
@@ -19,10 +18,10 @@ Vue.use(VueSimpleAlert, {
     cancelButton:'secondary'
   },
   width:300,
-  
+
   confirmButtonText : '확인',
   cancelButtonText:'취소',
-  
+
 });
 Vue.use(VModal, { dynamicDefault: { draggable: false, resizable: false } })
 
