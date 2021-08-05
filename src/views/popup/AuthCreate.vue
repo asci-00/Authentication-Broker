@@ -91,7 +91,7 @@ export default {
           { key: "host", value: "", label: "호스트 이름" },
           { key: "model", value: "", label: "모델 이름" },
         ],
-        connect_type : '',
+        connect_type : 'SSH',
         connect_info: [
           {key : 'none', value : ''},
           {key : 'none', value : ''},
@@ -118,10 +118,8 @@ export default {
       //입력 유효성 검증
       if(this.isAvailable(this.infos.type)) {
         //path 생성
-        if(this.infos.type === 'internal')
-          this.infos.path = this.infos.required_info[1]['value']
-        else
-          this.infos.path = this.infos.customer_name + `/${this.infos.connect_type}:${this.infos.required_info[0]['value']}`
+        this.infos.path = (this.infos.type === 'internal' ? this.infos.required_info[1]['value'] : this.infos.customer_name)
+        this.infos.path += `/${this.infos.connect_type}:${this.infos.required_info[0]['value']}`
         //key-value 생성
         const reqData = {data : {}}
         this.infos.required_info.forEach(item => {

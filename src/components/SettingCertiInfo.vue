@@ -28,8 +28,8 @@ export default {
     onDelete() { this.$emit("delete") },
     init(data) {
         if(data && data['customerIp']) {
-          const { customerIp : ip, protocol : connect } = data
-          const { model, host, equip, ...list} = data.list
+          const { customerIp : ip, protocol : connect, model, host, equip } = data
+          const { ...list} = data.list
           this.data = { ip, connect, model, host, equip, list }
         }
       }

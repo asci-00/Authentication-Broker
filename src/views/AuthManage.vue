@@ -150,14 +150,15 @@ export default {
       model.children.forEach(child => this.initModelData(child))
     },
     onApply(data) {
-      Api.updateConnectionInfo(data.type, data.path, data.reqData).then(res=>this.$alert('적용되었습니다.'))
-      .catch(err=>{
-        this.$alert('관리자에게 문의해주세요', 'Error')
-       })
-      .then(res => {
 
-        this.closePopup()
+      Api.updateConnectionInfo(data.type, data.path, data.reqData).then(res => {
+        this.tree_data = []
+        Api.getTreeEquipList().then(res => { this.tree_data = objectToTree(res.data) })
+        .catch(err=>this.$alert('관리자에게 문의해주세요', 'Error'))
+        this.$alert('적용되었습니다.')
       })
+      .catch(err=>{ this.$alert('관리자에게 문의해주세요', 'Error') })
+      .then(res => { this.closePopup() })
 
     },
     onDelete() {
