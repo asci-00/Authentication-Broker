@@ -142,12 +142,34 @@ export default {
         })
         this.$emit('submit', {name : this.per_name, data : res})
     },
+    onDelete(idx) {
+        this.roles.splice(idx, 1)
+    },
     onExit() { this.$modal.show(this.modal_name) },
     modal_onSubmit() {
         this.$modal.hide(this.modal_name)
         this.$emit('close')
     },
     modal_onExit() { this.$modal.hide(this.modal_name) }
+  },
+  created() {
+      const _vm = this
+
+      this.columns = [...this.columns, {
+      key : '2', field : 'buttons', title : '', align:'right', 
+      renderBodyCell: ({ row, column, rowIndex }, h) => {
+        return h( "input", {
+                attrs: { type: "button", value: "삭제", class:'small' },
+                on: {
+                  click: function(ev) {
+                    ev.stopPropagation()
+                    _vm.onDelete(rowIndex)
+                  }
+                }
+              }, []
+            )
+      }
+    }]
   },
   beforeDestroy() {
     if(this.selectedItem) this.selectedItem.model.selected = false
