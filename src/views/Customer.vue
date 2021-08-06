@@ -39,7 +39,11 @@ export default {
   },
   created() {
     Api.getEquipList().then(res => {
-      this.data = [...res.data['internal'], ...res.data['external']].map(item => ({...item, ...item['data']}))
+      this.data = [...res.data['internal'], ...res.data['external']].map(item => ({...item, ...item['data']})).map(item => ({
+        ...item,
+        ...(item.createdTime ? {createdTime : item.createdTime.split(/[T.]/)[0]} : {}),
+        ...(item.recentCertification ? {recentCertification : item.recentCertification.split(/[T.]/)[0]} : {}),
+      }))
     }).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))
   }
 }
