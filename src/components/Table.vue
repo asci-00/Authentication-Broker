@@ -106,7 +106,7 @@
           if(selected_category.filter_func) {
             this.searchedData = data.filter(item => selected_category.filter_func(item, search))
           }
-          else this.searchedData = data.filter(item => item[selected].includes(search))
+          else this.searchedData = data.filter(item => (item[selected] && item[selected].includes(search)))
         } else this.searchedData = data.filter(item => filteringData(item, search))
       }
     },

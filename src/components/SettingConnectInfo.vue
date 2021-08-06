@@ -43,8 +43,8 @@ export default {
         if(data.list) {
           const tr_data = Object.values(data.list)
           for(let i = 0; i < 3; i++) {
-            this.key_values[i].key = tr_data[i].key
-            this.key_values[i].value = tr_data[i].value
+            this.key_values[i].key = tr_data[i] ? tr_data[i].key : 'none'
+            this.key_values[i].value = tr_data[i] ? tr_data[i].value : ''
           }
         }
         if(data.connect) this.connect_type = data.connect
