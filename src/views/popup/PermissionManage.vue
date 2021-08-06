@@ -132,7 +132,7 @@ export default {
       }
   },
   methods : {
-    itemClick (node, item, e) {
+    itemClick (node) {
         this.selectedItem = node
         let now = node, path = `/${node.model.text}`
         while(now.$parent.model) {
@@ -148,7 +148,7 @@ export default {
     },
     permChange (data) { this.checked = data },
     onApply() {
-        if(this.path === "" || !this.checked.includes(true)) {console.log('err')}//error open
+        if(this.path === "" || !this.checked.includes(true)) this.$alert('필수항목을 입력해주십시오', 'Warning')
         else {
             if(this.selectedPathIdx) {
                 this.roles[this.selectedPathIdx] = {
@@ -165,7 +165,7 @@ export default {
         this.init()
     },
     init() {
-        this.checked = this.perm_list.map(i => false)
+        this.checked = this.perm_list.map(() => false)
         if(this.selectedItem) this.selectedItem.model.selected = false
         this.selectedItem = null
         this.selectedPathIdx = null
@@ -180,9 +180,7 @@ export default {
     },
     onDelete(idx) { this.roles.splice(idx, 1) },
     onExit() {
-        this.$confirm('취소하시겠습니까?')
-        .then(res => this.$emit('close'))
-        .catch(err=>{})
+        this.$confirm('취소하시겠습니까?').then(() => this.$emit('close'))
     },
   },
   created() {
@@ -190,7 +188,7 @@ export default {
 
       this.columns = [...this.columns, {
       key : '2', field : 'buttons', title : '', align:'right', width: 20,
-      renderBodyCell: ({ row, column, rowIndex }, h) => {
+      renderBodyCell: ({ rowIndex }, h) => {
         return h( "input", {
                 attrs: { type: "button", value: "X", class:'small secondary' },
                 on: {
@@ -206,7 +204,7 @@ export default {
 
     Api.getTreeEquipList().then(res => {
       this.tree_data = objectToTree(res.data)
-    }).catch(err=>this.$alert('관리자에게 문의해주세요', 'Error'))
+    }).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))
   },
   beforeDestroy() {
     if(this.selectedItem) this.selectedItem.model.selected = false

@@ -80,7 +80,7 @@ export default {
           role : rolesData
         }
         this.$modal.show("modal");
-      }).catch(err=>this.$alert('관리자에게 문의해주세요', 'Error'))
+      }).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))
     },
     onCreate() {
       this.props = {
@@ -91,13 +91,13 @@ export default {
     },
     onApply({name, data}) {
       const res = HCL.stringify(JSON.stringify(data))
-      Api.updatePolicyInfo(name, res).then(res => {
+      Api.updatePolicyInfo(name, res).then(() => {
         this.init()
-        this.$alert('적용되었습니다.').then(res => this.$modal.hide("modal"))
-      }).catch(err => this.$alert('관리자에게 문의해주세요', 'Error'))
+        this.$alert('적용되었습니다.').then(() => this.$modal.hide("modal"))
+      }).catch(() => this.$alert('관리자에게 문의해주세요', 'Error'))
     },
     onDelete(name) {
-      Api.deletePolicy(name).catch(err=>this.$alert('관리자에게 문의해주세요', 'Error')).then(res => {this.init()})
+      Api.deletePolicy(name).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error')).then(this.init)
     },
     onModalClose(name) { this.$modal.hide(name); },
     init() {
@@ -105,7 +105,7 @@ export default {
       return Api.getPolicyList().then(res => {
         const list = res.data.policies
         this.data = list.map(name => ({name}))
-      }).catch(err=>this.$alert('관리자에게 문의해주세요', 'Error'))
+      }).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))
     }
   },
   created() {
@@ -113,7 +113,7 @@ export default {
     const _vm = this;
     this.columns[last_idx] = {
       ...this.columns[last_idx],
-      renderBodyCell: ({ row, column, index }, h) => {
+      renderBodyCell: ({ row }, h) => {
         return h( "div", { attrs: { class: "button-group" } },
           [
             h( "input", {
@@ -129,8 +129,8 @@ export default {
                 on: {
                   click: function() {
                     _vm.$confirm('삭제하시겠습니까?')
-                    .then(res => _vm.onDelete(row['name']))
-                    .catch(err=>{})
+                    .then(() => _vm.onDelete(row['name']))
+                    .catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))
                   }
                 }
               }, []

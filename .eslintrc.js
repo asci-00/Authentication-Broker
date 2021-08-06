@@ -14,9 +14,9 @@ module.exports = {
     parser: 'babel-eslint'
   },
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-console': ["error", { allow: ["warn", "error"] }],
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    "no-unused-vars": 1,
+    "no-unused-vars": ["error", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }],
     'prettier/prettier': 0,
   }
 }

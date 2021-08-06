@@ -131,14 +131,10 @@ export default {
         })
         this.$emit("submit", {...this.infos, reqData})
       }
-      else {
-        console.log('is not avail')
-      }
+      else this.$alert('필수항목을 입력해주십시오', 'Warning')
     },
     onExit() {
-      this.$confirm('취소하시겠습니까?')
-        .then(res => this.$emit("close"))
-        .catch(err=>{})
+      this.$confirm('취소하시겠습니까?').then(() => this.$emit("close"))
     },
   },
 };

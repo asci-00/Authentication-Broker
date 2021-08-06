@@ -111,7 +111,7 @@
       }
     },
     watch : {
-      data(new_val) { this.searchedData = this.data }
+      data(new_val) { this.searchedData = new_val }
     }
   };
 </script>

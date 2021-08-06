@@ -110,7 +110,6 @@
 <script lang="ts">
 import VJstree from "@/local-module/VTree";
 import AuthCreate from "./popup/AuthCreate.vue";
-import { tree_data_example2 } from "@/modules/static/permission.js";
 import { objectToTree } from "@/modules/static/dataTransform";
 import SearchBar from "@/components/SearchBar.vue";
 import SettingCertiInfo from "@/components/SettingCertiInfo.vue";
@@ -151,21 +150,19 @@ export default {
     },
     onApply(data) {
 
-      Api.updateConnectionInfo(data.type, data.path, data.reqData).then(res => {
+      Api.updateConnectionInfo(data.type, data.path, data.reqData).then(() => {
         this.tree_data = []
         Api.getTreeEquipList().then(res => { this.tree_data = objectToTree(res.data) })
-        .catch(err=>this.$alert('관리자에게 문의해주세요', 'Error'))
+        .catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))
         this.$alert('적용되었습니다.')
       })
-      .catch(err=>{ this.$alert('관리자에게 문의해주세요', 'Error') })
-      .then(res => { this.closePopup() })
+      .catch(()=>{ this.$alert('관리자에게 문의해주세요', 'Error') })
+      .then(() => { this.closePopup() })
 
     },
     onDelete() {
       const { protocol , customerIp } = this.selectedItem.model.info
-      this.$confirm('삭제하시겠습니까?')
-        .then(res => Api.deleteConnectionInfo(protocol, customerIp).catch(err=>this.$alert('관리자에게 문의해주세요', 'Error')))
-        .catch(err=>{})
+      this.$confirm('삭제하시겠습니까?').then(() => Api.deleteConnectionInfo(protocol, customerIp).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error')))
     },
     onSearch(keyword) {
       this.model_data.forEach(item => { this.initModelData(item) })
@@ -195,8 +192,7 @@ export default {
   created() {
     Api.getTreeEquipList().then(res => {
       this.tree_data = objectToTree(res.data)
-      console.log(this.tree_data)
-    }).catch(err=>this.$alert('관리자에게 문의해주세요', 'Error'))
+    }).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))
   },
   beforeDestroy() {
     this.model_data.forEach(item => { this.initModelData(item) })

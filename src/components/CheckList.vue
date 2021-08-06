@@ -23,9 +23,7 @@ export default {
     return { isChecked: this.checked };
   },
   methods: {
-    onChange(idx) {
-      this.$emit("change", this.isChecked);
-    }
+    onChange() { this.$emit("change", this.isChecked); }
   },
   watch: {
     checked(data) {
