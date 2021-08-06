@@ -1,0 +1,1 @@
+export const connect_keys = ['ID', 'Password', 'key_MAC', 'token_MAC']

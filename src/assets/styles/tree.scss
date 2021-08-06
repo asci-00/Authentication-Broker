@@ -6,8 +6,8 @@
     color: white;
     border-radius: 5px;
     transition: .2s;
-
-    .tree-anchor {
+    
+    & .tree-anchor {
         border-radius: 3px !important;
         &.tree-selected { background: #22c1d0 !important; }
         &.tree-highlight {
@@ -15,5 +15,7 @@
           color: black !important;
         }
     }
-
+    &.modal-tree {
+      height:300px;
+    }
 }

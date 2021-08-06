@@ -149,8 +149,7 @@ export default {
       model.children.forEach(child => this.initModelData(child))
     },
     onApply(data) {
-
-      Api.updateConnectionInfo(data.type, data.path, data.reqData).then(() => {
+      Api.updateConnectionInfo(data.type, data.path, data.data).then(() => {
         this.tree_data = []
         Api.getTreeEquipList().then(res => { this.tree_data = objectToTree(res.data) })
         .catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))
@@ -162,7 +161,10 @@ export default {
     },
     onDelete() {
       const { protocol , customerIp } = this.selectedItem.model.info
-      this.$confirm('삭제하시겠습니까?').then(() => Api.deleteConnectionInfo(protocol, customerIp).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error')))
+      this.$confirm('삭제하시겠습니까?').then(() => 
+        Api.deleteConnectionInfo(protocol, customerIp)
+        .then(() => this.init()).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))
+      )
     },
     onSearch(keyword) {
       this.model_data.forEach(item => { this.initModelData(item) })
@@ -187,13 +189,15 @@ export default {
     },
     openPopup() { this.$modal.show("auth-manage-popup") },
     closePopup() { this.$modal.hide("auth-manage-popup") },
-
+    init() {
+      this.tree_data = []
+      this.selectedItem = undefined
+      Api.getTreeEquipList().then(res => {
+        this.tree_data = objectToTree(res.data)
+      }).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))
+    }
   },
-  created() {
-    Api.getTreeEquipList().then(res => {
-      this.tree_data = objectToTree(res.data)
-    }).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))
-  },
+  created() { this.init() },
   beforeDestroy() {
     this.model_data.forEach(item => { this.initModelData(item) })
     if(this.selectedItem) this.selectedItem.model.selected = false

@@ -16,23 +16,3 @@ export const columns = [
 export const buttons = [
     { label : '신규등록', onClick : () => undefined, className : 'ac-button' },
 ]
-
-//debug code
-
-const createData = () => {
-    const data = []
-    for(let i = 1; i <= 100; i++) {
-        data.push({
-            'customer' : '고객사' + i,
-            'model' : '모델' + i,
-            'host' : '호스트' + i,
-            'equipment' : '장비' + i,
-            'last-change' : '2017-09-12 12:11',
-            'ip-addr' : '000.000.000.000',
-            'last-auth' : '2017-09-12 12:11',
-        })
-    }
-    return data
-}
-export const data = createData()
-

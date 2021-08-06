@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Customer from '../views/Customer.vue'
-import AuthManage from '../views/AuthManage.vue'
+//import AuthManage from '../views/AuthManage.vue'
 
 Vue.use(VueRouter)
 

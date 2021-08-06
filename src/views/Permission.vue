@@ -90,8 +90,7 @@ export default {
       this.$modal.show("modal");
     },
     onApply({name, data}) {
-      const res = HCL.stringify(JSON.stringify(data))
-      Api.updatePolicyInfo(name, res).then(() => {
+      Api.updatePolicyInfo(name, data).then(() => {
         this.init()
         this.$alert('적용되었습니다.').then(() => this.$modal.hide("modal"))
       }).catch(() => this.$alert('관리자에게 문의해주세요', 'Error'))

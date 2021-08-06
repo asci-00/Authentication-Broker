@@ -37,7 +37,7 @@
                             :data="tree_data"
                             allow-batch whole-row
                             @item-click="itemClick"
-                            class="tree-wrapper scroll-container"
+                            class="tree-wrapper scroll-container modal-tree"
                             v-if="tree_data.length"
                             />
                       </div>
@@ -105,7 +105,7 @@
 import VJstree from 'vue-jstree'
 import VCheckList from '@/components/CheckList'
 import { permColumns } from '@/modules/static/permission'
-import { objectToTree } from "@/modules/static/dataTransform";
+import { objectToTree, objectToHCL } from "@/modules/static/dataTransform";
 import * as Api from '@/apis/equipment.js'
 
 export default {
@@ -172,11 +172,10 @@ export default {
         this.path = ""
     },
     onsubmit() {
-        const res = {path : {}}
-        this.roles.forEach(role => {
-            res['path'][role.path] = { capabilities : role.capabilities }
-        })
-        this.$emit('submit', {name : this.per_name, data : res})
+        if(this.per_name && this.roles.length) {
+            this.$emit('submit', {name : this.per_name, data : objectToHCL(this.roles)})
+        }
+        else this.$alert('필수항목을 입력해주십시오', 'Warning')
     },
     onDelete(idx) { this.roles.splice(idx, 1) },
     onExit() {

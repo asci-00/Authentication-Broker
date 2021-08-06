@@ -76,7 +76,8 @@
 </template>
 
 <script>
-
+import { connect_keys } from '@/modules/static/common'
+import { getRequestParam } from '@/modules/static/dataTransform'
 export default {
   props: {
     //state : Object,
@@ -101,7 +102,7 @@ export default {
         path : ''
       },
       connection : ['SSH', 'API', 'HMAC', 'GUI'],
-      connect_keys : ['ID', 'Password', 'key_MAC', 'token_MAC'],
+      connect_keys
     };
   },
   computed : {
@@ -118,18 +119,7 @@ export default {
       //입력 유효성 검증
       if(this.isAvailable(this.infos.type)) {
         //path 생성
-        this.infos.path = (this.infos.type === 'internal' ? this.infos.required_info[1]['value'] : this.infos.customer_name)
-        this.infos.path += `/${this.infos.connect_type}:${this.infos.required_info[0]['value']}`
-        //key-value 생성
-        const reqData = {data : {}}
-        this.infos.required_info.forEach(item => {
-          if(item['value'] !== '') reqData['data'][item['key']] = item['value']
-        })
-        this.infos.connect_info.forEach(item => {
-          if(item['key'] !== 'none' && item['value'] !== '')
-            reqData['data'][item['key']] = item['value']
-        })
-        this.$emit("submit", {...this.infos, reqData})
+        this.$emit("submit", getRequestParam(this.infos))
       }
       else this.$alert('필수항목을 입력해주십시오', 'Warning')
     },
