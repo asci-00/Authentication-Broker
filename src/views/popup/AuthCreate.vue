@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="title">신규 등록</div>
     <div class="guide-box">
-      <div>
+      <div class="radio">
         <input
           v-model="infos.type"
           id="set-internal"
@@ -11,7 +11,7 @@
           value="internal"
         /><label for="set-internal">Internal</label>
       </div>
-      <div>
+      <div class="radio">
         <input
           v-model="infos.type"
           id="set-external"
@@ -41,13 +41,15 @@
             <ul class="list-box type-list">
               <li class="list-title">접속 방식</li>
               <li v-for="(type, idx) in connection" :key="idx">
-                <input
-                  :id="type"
-                  :value="type"
-                  type="radio"
-                  name="connect-type"
-                  v-model="infos.connect_type"
-                /><label :for="type">{{type}}</label>
+                <div class="radio" @click="radioClick(type)">
+                  <input
+                    v-model="infos.connect_type"
+                    :id="type"
+                    :value="type"
+                    type="radio"
+                    name="connect-type"
+                  /><label :for="type">{{type}}</label>
+                </div>
               </li>
             </ul>
             <ul class="list-box config-list">
@@ -79,9 +81,6 @@
 import { connect_keys } from '@/modules/static/common'
 import { getRequestParam } from '@/modules/static/dataTransform'
 export default {
-  props: {
-    //state : Object,
-  },
   data() {
     return {
       infos: {
@@ -102,10 +101,8 @@ export default {
         path : ''
       },
       connection : ['SSH', 'API', 'HMAC', 'GUI'],
-      connect_keys
+      connect_keys,
     };
-  },
-  computed : {
   },
   methods: {
     isAvailable(type) {
@@ -115,13 +112,19 @@ export default {
       if(type === 'external' && (ip['value'] == '' || name == '')) return false
       return true
     },
+    radioClick(type) { this.infos.connect_type = type },
     onsubmit() {
       //입력 유효성 검증
       if(this.isAvailable(this.infos.type)) {
         //path 생성
         this.$emit("submit", getRequestParam(this.infos))
       }
-      else this.$alert('필수항목을 입력해주십시오', 'Warning')
+      else {
+        const message = this.infos.type === 'internal' ? 
+          'IP와 장비이름이<br/>유효하지 않습니다' :
+          'IP와 고객사명이<br/>유효하지 않습니다.'
+        this.$alert(undefined,undefined,undefined, {html : message})
+      }
     },
     onExit() {
       this.$confirm('취소하시겠습니까?').then(() => this.$emit("close"))

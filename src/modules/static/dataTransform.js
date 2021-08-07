@@ -55,7 +55,7 @@ export const getRequestParam = (obj) => {
     const data = { }
 
     allData.forEach(item => {
-        if(item['key'] == 'ip' || item['key'] == 'none' || item['value'] == '') return
+        if(item['key'] == 'none' || item['value'] == '') return
         data[item['key']] = item['value']
     })
     return { type : obj.type, path, data : { data } }

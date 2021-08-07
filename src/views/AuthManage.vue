@@ -192,6 +192,7 @@ export default {
     init() {
       this.tree_data = []
       this.selectedItem = undefined
+      this.data_list = null
       Api.getTreeEquipList().then(res => {
         this.tree_data = objectToTree(res.data)
       }).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))

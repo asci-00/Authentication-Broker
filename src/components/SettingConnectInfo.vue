@@ -5,14 +5,16 @@
       <ul class="list-box type-list">
         <li class="list-title">접속 방식</li>
         <li v-for="(type, idx) in modeList" :key="idx">
-          <input
-            :id="type"
-            type="radio"
-            name="connect-type"
-            :value="type"
-            :checked="connect_type === type"
-            disabled
-          /><label :for="type">{{ type }}</label>
+          <div class="radio">
+            <input
+              :id="type"
+              type="radio"
+              name="connect-type"
+              :value="type"
+              :class="connect_type === type ? 'checked' : ''"  
+              disabled
+            /><label :for="type">{{ type }}</label>
+          </div>
         </li>
       </ul>
       <ul class="list-box config-list">
@@ -21,7 +23,7 @@
           <select disabled>
             <option :value="item.key" selected>{{item.key}}</option>
           </select>
-          <input type="text" placeholder="input value" :value="item.value" disabled/>
+          <input :type="item.key === 'Password' ? 'password' : 'text'" placeholder="input value" :value="item.value" disabled/>
         </li>
       </ul>
     </section>
@@ -53,7 +55,7 @@ export default {
   },
   data() {
     return {
-      modeList: ["ssh", "api", "hmac", "gui"],
+      modeList: ["SSH", "API", "HMAC", "GUI"],
       key_values : [
         {key : 'none', value : ''},
         {key : 'none', value : ''},
@@ -63,9 +65,7 @@ export default {
     };
   },
   watch : {
-    props(newProps) {
-      this.init(newProps)
-    }
+    props(newProps) { this.init(newProps) }
   }
 };
 </script>

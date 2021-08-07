@@ -32,7 +32,7 @@
                 <div class="setting-box">
                     <div class="head-box">
                       <div class="tree-wrap">
-                        <h2 class="line-label"><span>권한 목록</span></h2>
+                        <h2 class="line-label"><span>인증 디렉토리</span></h2>
                         <v-jstree
                             :data="tree_data"
                             allow-batch whole-row
@@ -175,7 +175,7 @@ export default {
         if(this.per_name && this.roles.length) {
             this.$emit('submit', {name : this.per_name, data : objectToHCL(this.roles)})
         }
-        else this.$alert('필수항목을 입력해주십시오', 'Warning')
+        else this.$alert(undefined,undefined,undefined, {html : '권한명과 하나 이상의<br/> 권한이 필요합니다'})
     },
     onDelete(idx) { this.roles.splice(idx, 1) },
     onExit() {
