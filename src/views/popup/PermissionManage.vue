@@ -124,8 +124,8 @@ export default {
         columns : permColumns,
         per_name : this.name, path : '',
         tree_data : [],
-        perm_list : ['create', 'delete', 'update', 'read', 'list'],
-        checked : [false, false, false, false, false],
+        perm_list : ['create', 'delete', 'update', 'read'],
+        checked : [false, false, false, false],
         roles : this.role,
         selectedItem : null,
         selectedPathIdx : null
@@ -173,6 +173,11 @@ export default {
     },
     onsubmit() {
         if(this.per_name && this.roles.length) {
+            this.roles = this.roles.map(item => ({
+                path : item.path,
+                capabilities : (item.capabilities.includes('read') ? 
+                item.capabilities.concat('list') : item.capabilities)
+            }))
             this.$emit('submit', {name : this.per_name, data : objectToHCL(this.roles)})
         }
         else this.$alert(undefined,undefined,undefined, {html : '권한명과 하나 이상의<br/> 권한이 필요합니다'})
