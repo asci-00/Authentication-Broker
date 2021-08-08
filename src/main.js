@@ -16,12 +16,9 @@ Vue.use(VueSimpleAlert, {
     content:'content primary',
     confirmButton:'primary',
     cancelButton:'secondary'
-  },
-  width:300,
-
+  }, width:300,
   confirmButtonText : '확인',
-  cancelButtonText:'취소',
-
+  cancelButtonText:'취소'
 });
 Vue.use(VModal, { dynamicDefault: { draggable: false, resizable: false } })
 
