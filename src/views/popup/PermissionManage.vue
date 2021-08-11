@@ -208,7 +208,10 @@ export default {
 
     Api.getTreeEquipList().then(res => {
       this.tree_data = objectToTree(res.data)
-    }).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))
+    }).catch((err) => {
+        const message = (err.rt === 403 ? '세션이 유효하지 않습니다.' : '관리자에게 문의해주세요')
+        this.$alert(message, 'Error')
+    })
   },
   beforeDestroy() {
     if(this.selectedItem) this.selectedItem.model.selected = false

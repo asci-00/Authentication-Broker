@@ -80,7 +80,10 @@ export default {
           role : rolesData
         }
         this.$modal.show("modal");
-      }).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))
+      }).catch(err => {
+        const message = (err.rt === 403 ? '세션이 유효하지 않습니다.' : '관리자에게 문의해주세요')
+        this.$alert(message, 'Error')
+      })
     },
     onCreate() {
       this.props = {
@@ -93,10 +96,16 @@ export default {
       Api.updatePolicyInfo(name, data).then(() => {
         this.init()
         this.$alert('적용되었습니다.').then(() => this.$modal.hide("modal"))
-      }).catch(() => this.$alert('관리자에게 문의해주세요', 'Error'))
+      }).catch(err => {
+        const message = (err.rt === 403 ? '세션이 유효하지 않습니다.' : '관리자에게 문의해주세요')
+        this.$alert(message, 'Error')
+      })
     },
     onDelete(name) {
-      Api.deletePolicy(name).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error')).then(this.init)
+      Api.deletePolicy(name).catch(err => {
+        const message = (err.rt === 403 ? '세션이 유효하지 않습니다.' : '관리자에게 문의해주세요')
+        this.$alert(message, 'Error')
+      }).then(this.init)
     },
     onModalClose(name) { this.$modal.hide(name); },
     init() {
@@ -104,7 +113,10 @@ export default {
       return Api.getPolicyList().then(res => {
         const list = res.data.policies
         this.data = list.map(name => ({name}))
-      }).catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))
+      }).catch(err => {
+        const message = (err.rt === 403 ? '세션이 유효하지 않습니다.' : '관리자에게 문의해주세요')
+        this.$alert(message, 'Error')
+      })
     }
   },
   created() {
@@ -129,7 +141,6 @@ export default {
                   click: function() {
                     _vm.$confirm('삭제하시겠습니까?')
                     .then(() => _vm.onDelete(row['name']))
-                    .catch(()=>this.$alert('관리자에게 문의해주세요', 'Error'))
                   }
                 }
               }, []
