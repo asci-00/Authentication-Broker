@@ -8,7 +8,7 @@ import { checkAuthentication } from '@/apis/auth'
 
 export default {
   props : ['token'],
-  created() {
+  async created() {
     if(this.token) {
       try {
         const res = await checkAuthentication(this.token)  
