@@ -18,5 +18,6 @@ import ViewNavigation from './views/Navigation.vue'
 export default {
   components : { ViewNavigation },
   data() { return { routes,} },
+  created() { console.warn(process.env) }
 }
 </script>

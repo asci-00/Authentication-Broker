@@ -1,3 +1,3 @@
 import Api from './Api'
 
-export const checkAuthentication = (token) => Api.get('/checkauth', { token })
+export const checkAuthentication = (hash) => Api.get('/checkauth', { params : { hash } })

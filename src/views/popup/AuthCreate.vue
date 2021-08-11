@@ -91,7 +91,7 @@ export default {
           { key: "host", value: "", label: "호스트 이름" },
           { key: "model", value: "", label: "모델 이름" },
         ],
-        connect_type : 'SSH',
+        connect_type : 'ssh',
         connect_info: [
           {key : 'none', value : ''},
           {key : 'none', value : ''},
