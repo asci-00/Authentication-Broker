@@ -100,7 +100,7 @@ export default {
         customer_name : '',
         path : ''
       },
-      connection : ['SSH', 'API', 'HMAC', 'GUI'],
+      connection : ['ssh', 'api', 'hmac', 'gui'],
       connect_keys,
     };
   },

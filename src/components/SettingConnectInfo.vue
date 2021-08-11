@@ -55,7 +55,7 @@ export default {
   },
   data() {
     return {
-      modeList: ["SSH", "API", "HMAC", "GUI"],
+      modeList: ["ssh", "api", "hmac", "gui"],
       key_values : [
         {key : 'none', value : ''},
         {key : 'none', value : ''},
