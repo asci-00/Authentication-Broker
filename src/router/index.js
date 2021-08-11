@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
+import Api from 'apis/Api'
 Vue.use(VueRouter)
 
 const tokenCheck = () => (from, to, next) => {
-  if(sessionStorage.getItem('token') == null) next('/notfound')
+  if(Api.defaults.headers['X-Vault-Token'] === null) next('/notfound')
   next()
 }
 

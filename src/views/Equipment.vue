@@ -44,10 +44,7 @@ export default {
         ...(item.createdTime ? {createdTime : item.createdTime.split(/[T.]/)[0]} : {}),
         ...(item.recentCertification ? {recentCertification : item.recentCertification.split(/[T.]/)[0]} : {}),
       }))
-    }).catch(err => {
-      const message = (err.rt === 403 ? '세션이 유효하지 않습니다.' : '관리자에게 문의해주세요')
-      this.$alert(message, 'Error')
-    })
+    }).catch(() => this.$alert('관리자에게 문의해주세요', 'Error'))
   }
 }
 </script>

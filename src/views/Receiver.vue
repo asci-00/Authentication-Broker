@@ -4,14 +4,17 @@
 
 <script>
 import { setToken } from '@/apis/Api'
+import { checkAuthentication } from '@/apis/auth'
 
 export default {
   props : ['token'],
   created() {
     if(this.token) {
-      sessionStorage.setItem('token', this.token)
-      setToken(this.token)
-      this.$router.push('/')
+      try {
+        const res = await checkAuthentication(this.token)  
+        setToken(res.data['token'])
+        this.$router.push('/')
+      } catch(e) { this.$router.push('/notfound') }
     } else this.$router.push('/notfound')
   }
 }

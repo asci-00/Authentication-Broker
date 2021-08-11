@@ -152,16 +152,10 @@ export default {
       Api.updateConnectionInfo(data.type, data.path, data.data).then(() => {
         this.tree_data = []
         Api.getTreeEquipList().then(res => { this.tree_data = objectToTree(res.data) })
-        .catch(err => {
-          const message = (err.rt === 403 ? '세션이 유효하지 않습니다.' : '관리자에게 문의해주세요')
-          this.$alert(message, 'Error')
-        })
+        .catch(() => this.$alert('관리자에게 문의해주세요', 'Error'))
         this.$alert('적용되었습니다.')
       })
-      .catch(err => {
-          const message = (err.rt === 403 ? '세션이 유효하지 않습니다.' : '관리자에게 문의해주세요')
-          this.$alert(message, 'Error')
-        })
+      .catch(() => this.$alert('관리자에게 문의해주세요', 'Error'))
       .then(() => { this.closePopup() })
 
     },
@@ -169,11 +163,8 @@ export default {
       const { protocol , customerIp } = this.selectedItem.model.info
       this.$confirm('삭제하시겠습니까?').then(() => 
         Api.deleteConnectionInfo(protocol, customerIp)
-        .then(() => this.init()).catch(err => {
-          const message = (err.rt === 403 ? '세션이 유효하지 않습니다.' : '관리자에게 문의해주세요')
-          this.$alert(message, 'Error')
-        })
-      ).catch()
+        .then(() => this.init()).catch(() => this.$alert('관리자에게 문의해주세요', 'Error'))
+      ).catch(()=>{})
     },
     onSearch(keyword) {
       this.model_data.forEach(item => { this.initModelData(item) })
@@ -204,10 +195,7 @@ export default {
       this.data_list = null
       Api.getTreeEquipList().then(res => {
         this.tree_data = objectToTree(res.data)
-      }).catch(err => {
-          const message = (err.rt === 403 ? '세션이 유효하지 않습니다.' : '관리자에게 문의해주세요')
-          this.$alert(message, 'Error')
-        })
+      }).catch(() => this.$alert('관리자에게 문의해주세요', 'Error'))
     }
   },
   created() { this.init() },
