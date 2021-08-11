@@ -173,7 +173,7 @@ export default {
           const message = (err.rt === 403 ? '세션이 유효하지 않습니다.' : '관리자에게 문의해주세요')
           this.$alert(message, 'Error')
         })
-      )
+      ).catch()
     },
     onSearch(keyword) {
       this.model_data.forEach(item => { this.initModelData(item) })

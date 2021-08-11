@@ -139,8 +139,7 @@ export default {
                 attrs: { type: "button", value: "삭제", class: "secondary" },
                 on: {
                   click: function() {
-                    _vm.$confirm('삭제하시겠습니까?')
-                    .then(() => _vm.onDelete(row['name']))
+                    _vm.$confirm('삭제하시겠습니까?').then(() => _vm.onDelete(row['name'])).catch()
                   }
                 }
               }, []
