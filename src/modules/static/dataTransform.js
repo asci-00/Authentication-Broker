@@ -10,18 +10,20 @@ const getTreeLeafNode = (obj) => {
         "icon": "fa fa-file" ,
         "info" : {
             customerIp, protocol, model, host, equip,
-            list : connect_keys.filter(key => list[key]).map(key => ({
+            list : connect_keys[protocol].filter(key => list[key]).map(key => ({
                 key, value : list[key]
             }))
         }
     }
 }
-const getTreeSubNode = (parent) => {    
+const getTreeSubNode = (parent) => {
     return Object.keys(parent).map(subNode => ({
             "text" : subNode.slice(0, -1),
             "opened" : false,
             "folder" : true,
-            "children" : parent[subNode].length ? parent[subNode].map(child => getTreeLeafNode(child)) : []
+            "children" : 
+                parent[subNode].length ? 
+                    parent[subNode].map(child => getTreeLeafNode(child)) : []
         })
     )
 }

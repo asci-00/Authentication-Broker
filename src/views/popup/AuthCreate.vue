@@ -55,10 +55,10 @@
             <ul class="list-box config-list">
               <li class="list-title"><span>Key</span><span>Value</span></li>
               <li v-for="(connect, idx) in infos.connect_info" :key="idx">
-                <select v-model="connect.key" value="none">
+                <select v-model="connect.key" value="none" :disabled="idx >= key_list.length">
                   <option value="none">none</option>
                   <option
-                    v-for="(key, idx) in connect_keys"
+                    v-for="(key, idx) in key_list"
                     :value="key"
                     :disabled="infos.connect_info.map(item=>item.key).includes(key)"
                     :key="idx">{{key}}</option>
@@ -101,8 +101,12 @@ export default {
         path : ''
       },
       connection : ['ssh', 'api', 'hmac', 'gui'],
-      connect_keys,
     };
+  },
+  computed : {
+    key_list : function() {
+      return connect_keys[this.infos.connect_type]
+    }
   },
   methods: {
     isAvailable(type) {
@@ -112,7 +116,10 @@ export default {
       if(type === 'external' && (ip['value'] == '' || name == '')) return false
       return true
     },
-    radioClick(type) { this.infos.connect_type = type },
+    radioClick(type) { 
+      this.infos.connect_type = type
+      this.keyInit()
+    },
     onsubmit() {
       //입력 유효성 검증
       if(this.isAvailable(this.infos.type)) {
@@ -129,6 +136,13 @@ export default {
     onExit() {
       this.$confirm('취소하시겠습니까?').then(() => this.$emit("close"))
     },
+    keyInit() {
+      this.infos.connect_info = [
+        {key : 'none', value : ''},
+        {key : 'none', value : ''},
+        {key : 'none', value : ''}
+      ]
+    }
   },
 };
 </script>
