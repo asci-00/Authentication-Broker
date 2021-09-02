@@ -47,15 +47,17 @@ export const objectToTree = (obj) => {
 }
 //policy create function
 export const getRequestParam = (obj) => {
+    const id = obj.connect_info.find(item => item.key === 'ID')
+    const id_name = id ? (id.value === '' ? 'default' : id.value) : 'default'
+
     const path = (
         obj.type === 'internal' ? 
             obj.required_info[1]['value'] : 
             obj.customer_name
-        ) + `/${obj.connect_type}:${obj.required_info[0]['value']}`
+        ) + `/${obj.connect_type}:${obj.required_info[0]['value']}:${id_name}`
     //key-value 생성
     const allData = [...obj.required_info, ...obj.connect_info]
     const data = { }
-
     allData.forEach(item => {
         if(item['key'] == 'none' || item['value'] == '') return
         data[item['key']] = item['value']

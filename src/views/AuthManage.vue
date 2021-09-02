@@ -160,9 +160,12 @@ export default {
 
     },
     onDelete() {
-      const { protocol , customerIp } = this.selectedItem.model.info
+      const { protocol , customerIp, list } = this.selectedItem.model.info
+      const id = list.find(item => item.key === 'ID')
+      const id_name = id ? id.value : 'default'
+      console.warn(id_name)
       this.$confirm('삭제하시겠습니까?').then(() => 
-        Api.deleteConnectionInfo(protocol, customerIp)
+        Api.deleteConnectionInfo(protocol, customerIp, id_name)
         .then(() => this.init()).catch(() => this.$alert('관리자에게 문의해주세요', 'Error'))
       ).catch(()=>{})
     },
