@@ -4,9 +4,9 @@ import { connect_keys } from './common'
 const getTreeLeafNode = (obj) => {
     const { customerIp, protocol } = obj
     const { model, host, equip, ...list} = obj['data']
-    
+    const host_name = (host && host !== '') ? host : 'default'
     return {
-        "text" : protocol ? `${protocol}:${customerIp}` : customerIp,
+        "text" : `${protocol}:${customerIp}:${host_name}`,
         "icon": "fa fa-file" ,
         "info" : {
             customerIp, protocol, model, host, equip,
@@ -29,7 +29,6 @@ const getTreeSubNode = (parent) => {
 }
 //tree data transform function
 export const objectToTree = (obj) => {
-    
     return [
         {
             "text" : "external",
@@ -47,14 +46,13 @@ export const objectToTree = (obj) => {
 }
 //policy create function
 export const getRequestParam = (obj) => {
-    const id = obj.connect_info.find(item => item.key === 'ID')
-    const id_name = id ? (id.value === '' ? 'default' : id.value) : 'default'
-
+    const host = obj.required_info[2]
+    const host_name = host === '' ? 'default' : host.value
     const path = (
         obj.type === 'internal' ? 
             obj.required_info[1]['value'] : 
             obj.customer_name
-        ) + `/${obj.connect_type}:${obj.required_info[0]['value']}:${id_name}`
+        ) + `/${obj.connect_type}:${obj.required_info[0]['value']}:${host_name}`
     //key-value 생성
     const allData = [...obj.required_info, ...obj.connect_info]
     const data = { }

@@ -79,7 +79,7 @@
         &.right-border { border-right:1px solid grey; }
         & .label-content {
             display:grid;
-            grid-template-columns: 2fr 6fr;
+            grid-template-columns: 90px auto;
             margin-bottom:20px;
             & .icon {
                 display:inline-block;

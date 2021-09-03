@@ -40,6 +40,7 @@ export default {
   padding: 10px;
   margin: 5px 0;
   min-height: 300px;
+  min-width:120px;
   border: 1px solid #22C1D0;
   border-radius:3px;
   & .check-item {
