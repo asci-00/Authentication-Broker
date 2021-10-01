@@ -48,7 +48,6 @@ export const objectToTree = (obj) => {
 export const getRequestParam = (obj) => {
     const host = obj.required_info[2]
     const host_name = (host && host.value !== '') ? host.value : 'default'
-	console.warn(host, host.value, host_name, host.value !== '')
     const path = (
         obj.type === 'internal' ? 
             obj.required_info[1]['value'] : 
@@ -61,7 +60,6 @@ export const getRequestParam = (obj) => {
         if(item['key'] == 'none' || item['value'] == '') return
         data[item['key']] = item['value']
     })
-	console.warn(obj.type, path, data)
     return { type : obj.type, path, data : { data } }
 }
 
