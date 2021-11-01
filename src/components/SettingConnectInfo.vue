@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import { connect_keys } from '@/modules/static/common'
 export default {
   created() {
     this.init(this.props)
@@ -55,7 +56,7 @@ export default {
   },
   data() {
     return {
-      modeList: ["ssh", "api", "hmac", "gui"],
+      modeList: Object.keys(connect_keys),
       key_values : [
         {key : 'none', value : ''},
         {key : 'none', value : ''},

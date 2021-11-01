@@ -100,7 +100,7 @@ export default {
         customer_name : '',
         path : ''
       },
-      connection : ['ssh', 'api', 'hmac', 'gui'],
+      connection : Object.keys(connect_keys) 
     };
   },
   computed : {
