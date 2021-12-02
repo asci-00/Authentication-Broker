@@ -59,7 +59,8 @@ export default {
         onSubmit: () => {},
         onClose: () => {},
         name: "",
-        role: []
+        role: [],
+        isNew : true,
       }
     };
   },
@@ -77,7 +78,8 @@ export default {
           title: "권한 변경",
           guideMessage: "Authentication Broker에서 사용할 권한을 변경합니다.",
           name: row['name'],
-          role : rolesData
+          role : rolesData,
+          isNew: false
         }
         this.$modal.show("modal");
       }).catch(() => this.$alert('관리자에게 문의해주세요', 'Error'))
@@ -85,12 +87,13 @@ export default {
     onCreate() {
       this.props = {
         title: "권한 생성",
-        guideMessage: "Authentication Broker에서 사용할 권한을 생성합니다."
+        guideMessage: "Authentication Broker에서 사용할 권한을 생성합니다.",
+        isNew : true,
       };
       this.$modal.show("modal");
     },
     onApply({name, data}) {
-      Api.updatePolicyInfo(name, data).then(() => {
+      Api.updatePolicyInfo(name, data, isNew).then(() => {
         this.init()
         this.$alert('적용되었습니다.').then(() => this.$modal.hide("modal"))
       }).catch(() => this.$alert('관리자에게 문의해주세요', 'Error'))

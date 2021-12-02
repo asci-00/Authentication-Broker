@@ -118,6 +118,7 @@ export default {
         type : Array,
         default : () => []
     },
+    isNew : Boolean
   },
   data() {
       return {
@@ -178,7 +179,7 @@ export default {
                 capabilities : (item.capabilities.includes('read') ?
                 item.capabilities.concat('list') : item.capabilities)
             }))
-            this.$emit('submit', {name : this.per_name, data : objectToHCL(this.roles)})
+            this.$emit('submit', {name : this.per_name, data : objectToHCL(this.roles), isNew: this.isNew})
         }
         else this.$alert(undefined,undefined,undefined, {html : '권한명과 하나 이상의<br/> 권한이 필요합니다'})
     },
