@@ -152,12 +152,12 @@ export default {
         else {
             if(this.selectedPathIdx) {
                 this.roles[this.selectedPathIdx] = {
-                    path : this.path,
+                    path : this.path.substr(1),
                     capabilities : this.perm_list.filter((i, idx) => this.checked[idx])
                 }
             } else {
                 this.roles.push({
-                    path : this.path,
+                    path : this.path.substr(1),
                     capabilities : this.perm_list.filter((i, idx) => this.checked[idx])
                 })
             }
@@ -175,7 +175,7 @@ export default {
         if(this.per_name && this.roles.length) {
             this.roles = this.roles.map(item => ({
                 path : item.path,
-                capabilities : (item.capabilities.includes('read') ? 
+                capabilities : (item.capabilities.includes('read') ?
                 item.capabilities.concat('list') : item.capabilities)
             }))
             this.$emit('submit', {name : this.per_name, data : objectToHCL(this.roles)})
