@@ -152,7 +152,7 @@ export default {
         else {
             if(this.selectedPathIdx) {
                 this.roles[this.selectedPathIdx] = {
-                    path : this.path.substr(1),
+                    path : this.path,
                     capabilities : this.perm_list.filter((i, idx) => this.checked[idx])
                 }
             } else {
