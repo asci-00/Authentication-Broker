@@ -118,7 +118,11 @@ export default {
         type : Array,
         default : () => []
     },
+<<<<<<< HEAD
     isNew: Boolean,
+=======
+    isNew : Boolean
+>>>>>>> 41ebd7cf73b04bbf00ac790f7a83d07d4982f61e
   },
   data() {
       return {
@@ -158,7 +162,7 @@ export default {
                 }
             } else {
                 this.roles.push({
-                    path : this.path,
+                    path : this.path.substr(1),
                     capabilities : this.perm_list.filter((i, idx) => this.checked[idx])
                 })
             }

@@ -11,13 +11,13 @@ export default {
   async created() {
     if(this.token) {
       try {
-        const res = await checkAuthentication(this.token)  
-	console.warn(res.data['token'])
+        const res = await checkAuthentication(this.token)
         setToken(res.data['token'])
         this.$router.push('/')
       } catch(e) { this.$router.push('/notfound') }
-    } else
-	this.$router.push('/notfound')
+    }
+    else this.$router.push('/notfound')
   }
 }
 </script>
+
