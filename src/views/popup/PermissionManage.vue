@@ -118,6 +118,7 @@ export default {
         type : Array,
         default : () => []
     },
+    isNew: Boolean,
   },
   data() {
       return {
@@ -175,10 +176,10 @@ export default {
         if(this.per_name && this.roles.length) {
             this.roles = this.roles.map(item => ({
                 path : item.path,
-                capabilities : (item.capabilities.includes('read') ? 
+                capabilities : (item.capabilities.includes('read') && !item.capabilities.includes('list') ? 
                 item.capabilities.concat('list') : item.capabilities)
             }))
-            this.$emit('submit', {name : this.per_name, data : objectToHCL(this.roles)})
+            this.$emit('submit', {name : this.per_name, data : objectToHCL(this.roles), isNew: this.isNew})
         }
         else this.$alert(undefined,undefined,undefined, {html : '권한명과 하나 이상의<br/> 권한이 필요합니다'})
     },
