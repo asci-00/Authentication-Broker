@@ -118,11 +118,7 @@ export default {
         type : Array,
         default : () => []
     },
-<<<<<<< HEAD
-    isNew: Boolean,
-=======
-    isNew : Boolean
->>>>>>> 41ebd7cf73b04bbf00ac790f7a83d07d4982f61e
+    isNew : Boolean,
   },
   data() {
       return {
