@@ -1,8 +1,8 @@
 <template>
-    <div id="app">
-        <view-navigation />
-        <section id="wrapper"><router-view /></section>
-    </div>
+  <div id="app">
+    <view-navigation />
+    <section id="wrapper"><router-view /></section>
+  </div>
 </template>
 
 <style lang="scss">
@@ -14,12 +14,12 @@
 
 <script>
 import { routes } from '@/router/';
-import ViewNavigation from './views/Navigation.vue';
+import ViewNavigation from './views/ViewNavigation.vue';
 
 export default {
-    components: { ViewNavigation },
-    data() {
-        return { routes };
-    },
+  components: { ViewNavigation },
+  data() {
+    return { routes };
+  },
 };
 </script>

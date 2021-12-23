@@ -1,5 +1,5 @@
 // tree data set
-import { connect_keys } from './common';
+import HCL from 'js-hcl-parser';
 
 const getTreeLeafNode = (obj) => {
   const { customerIp, protocol } = obj;
@@ -68,4 +68,37 @@ export const objectToHCL = (arr) => {
     hclString += `path "${role.path}" { capabilities = [${role.capabilities.map((r) => `"${r}"`).join(',')}] } `;
   });
   return hclString;
+};
+
+export const responseMiddleware = {
+  equipmentList: (response) => {
+    const { internal, external } = response;
+    const allData = [...internal, ...external];
+
+    return allData.map((item) => {
+      const { data, ...other } = item;
+      return {
+        ...data,
+        ...other,
+        createdTime: other.createdTime?.split(/[T.]/)[0],
+        recentCertification: other.recentCertification?.split(/[T.]/)[0],
+      };
+    });
+  },
+  policyList: (response) => {},
+  policyInfo: (response) => {
+    const { rules: hclString } = response.policy;
+    const jsonData = JSON.parse(HCL.parse(hclString));
+
+    if (jsonData && jsonData.path) {
+      return jsonData.path
+        .map((obj) => Object.entries(obj))
+        .map((arr) => ({
+          path: arr[0][0],
+          capabilities: arr[0][1][0].capabilities,
+        }));
+    }
+
+    return [];
+  },
 };

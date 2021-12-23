@@ -1,4 +1,4 @@
-const equipment = {
+export const equipment = {
   external: [
     {
       position: 'external',
@@ -184,7 +184,7 @@ const equipment = {
   ],
 };
 
-const hequipment = {
+export const hequipment = {
   external: {
     'IIPS/': [
       {
@@ -375,5 +375,17 @@ const hequipment = {
         recentCertification: '2021-11-19T16:27:36.417944407+09:00',
       },
     ],
+  },
+};
+
+export const policys = {
+  policies: ['admin', 'default', 'external', 'internal', 'root'],
+};
+
+export const policyEx = {
+  policy: {
+    name: 'default',
+    rules:
+      '\n# Allow tokens to look up their own properties\npath "auth/token/lookup-self" {\n    capabilities = ["read"]\n}\n\n# Allow tokens to renew themselves\npath "auth/token/renew-self" {\n    capabilities = ["update"]\n}\n\n# Allow tokens to revoke themselves\npath "auth/token/revoke-self" {\n    capabilities = ["update"]\n}\n\n# Allow a token to look up its own capabilities on a path\npath "sys/capabilities-self" {\n    capabilities = ["update"]\n}\n\n# Allow a token to look up its own entity by id or name\npath "identity/entity/id/{{identity.entity.id}}" {\n  capabilities = ["read"]\n}\npath "identity/entity/name/{{identity.entity.name}}" {\n  capabilities = ["read"]\n}\n\n\n# Allow a token to look up its resultant ACL from all policies. This is useful\n# for UIs. It is an internal path because the format may change at any time\n# based on how the internal ACL features and capabilities change.\npath "sys/internal/ui/resultant-acl" {\n    capabilities = ["read"]\n}\n\n# Allow a token to renew a lease via lease_id in the request body; old path for\n# old clients, new path for newer\npath "sys/renew" {\n    capabilities = ["update"]\n}\npath "sys/leases/renew" {\n    capabilities = ["update"]\n}\n\n# Allow looking up lease properties. This requires knowing the lease ID ahead\n# of time and does not divulge any sensitive information.\npath "sys/leases/lookup" {\n    capabilities = ["update"]\n}\n\n# Allow a token to manage its own cubbyhole\npath "cubbyhole/*" {\n    capabilities = ["create", "read", "update", "delete", "list"]\n}\n\n# Allow a token to wrap arbitrary values in a response-wrapping token\npath "sys/wrapping/wrap" {\n    capabilities = ["update"]\n}\n\n# Allow a token to look up the creation time and TTL of a given\n# response-wrapping token\npath "sys/wrapping/lookup" {\n    capabilities = ["update"]\n}\n\n# Allow a token to unwrap a response-wrapping token. This is a convenience to\n# avoid client token swapping since this is also part of the response wrapping\n# policy.\npath "sys/wrapping/unwrap" {\n    capabilities = ["update"]\n}\n\n# Allow general purpose tools\npath "sys/tools/hash" {\n    capabilities = ["update"]\n}\npath "sys/tools/hash/*" {\n    capabilities = ["update"]\n}\n\n# Allow checking the status of a Control Group request if the user has the\n# accessor\npath "sys/control-group/request" {\n    capabilities = ["update"]\n}\n',
   },
 };

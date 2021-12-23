@@ -1,3 +1,3 @@
-import Api from './Api'
+import Api from './Api';
 
-export const checkAuthentication = (hash) => Api.get(`/checkauth/${hash}`)
+export const checkAuthentication = (hash) => Api.get(`/checkauth/${hash}`);

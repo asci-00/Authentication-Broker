@@ -90,13 +90,14 @@
 </style>
 
 <script lang="ts">
+import * as Api from '@/apis/equipment.js';
 import VJstree from '@/local-module/VTree';
 import AuthCreate from './popup/AuthCreate.vue';
-import { objectToTree } from '@/modules/static/dataTransform';
 import SearchBar from '@/components/SearchBar.vue';
 import SettingCertiInfo from '@/components/SettingCertiInfo.vue';
-import * as Api from '@/apis/equipment.js';
-import { getPath, searchItem } from '@/common/tree.js';
+import { setError } from '@/utils/errorHandling';
+import { objectToTree } from '@/utils/dataTransform';
+import { getPath, searchItem } from '@/utils/tree.js';
 
 export default {
   components: { VJstree, SearchBar, AuthCreate, SettingCertiInfo },
@@ -121,19 +122,18 @@ export default {
       this.autoInfo = null;
       this.setTreeData();
     },
-
     initModelData(model) {
       model.highlight = false;
       model.children.forEach((child) => this.initModelData(child));
     },
+    initTreeData(data) {
+      this.model_data = data;
+    },
 
-    // Server data response, request
     setTreeData() {
       Api.getTreeEquipList()
-        .then((res) => {
-          this.tree_data = objectToTree(res.data);
-        })
-        .catch(() => this.$alert('관리자에게 문의해주세요', 'Error'));
+        .then((res) => (this.tree_data = objectToTree(res.data)))
+        .catch(setError.bind(this));
     },
     createAuthFile(data) {
       Api.updateConnectionInfo(data.type, data.path, data.data)
@@ -142,36 +142,29 @@ export default {
           this.setTreeData();
           this.$alert('적용되었습니다.');
         })
-        .catch(() => this.$alert('관리자에게 문의해주세요', 'Error'))
-        .then(() => this.closePopup());
+        .then(this.closePopup)
+        .catch(setError.bind(this));
     },
     deleteAuthFile(...params) {
       Api.deleteConnectionInfo(...params)
-        .then(() => this.init())
-        .catch(() => this.$alert('관리자에게 문의해주세요', 'Error'));
+        .then(this.init)
+        .catch(setError.bind(this));
     },
-
-    // Tree Event Callback
     onClickItem(item) {
       this.selectedItem = item;
       this.autoInfo = item.model.info;
       this.path = getPath(item);
     },
-    initTreeData(data) {
-      this.model_data = data;
-    },
-    // Delete Button Click Callback
     onDelete() {
       const { protocol, customerIp, host } = this.selectedItem.model.info;
       const hostName = host || 'default';
 
       this.$confirm('삭제하시겠습니까?')
         .then(() => this.deleteAuthFile(protocol, customerIp, hostName))
-        .catch(() => 0);
+        .catch();
     },
-    // Search Button Click Callback
     onSearch() {
-      this.model_data.forEach((item) => this.initModelData(item));
+      this.model_data.forEach(this.initModelData); // 검색 초기화
 
       if (this.selectedCategory === 'all') this.model_data.forEach((item) => searchItem(item, this.search));
       else {
@@ -190,7 +183,7 @@ export default {
     this.init();
   },
   beforeDestroy() {
-    this.model_data.forEach((item) => this.initModelData(item));
+    this.model_data.forEach(this.initModelData);
     if (this.selectedItem) this.selectedItem.model.selected = false;
   },
 };

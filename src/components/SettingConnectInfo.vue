@@ -11,7 +11,7 @@
               type="radio"
               name="connect-type"
               :value="type"
-              :class="connect_type === type ? 'checked' : ''"  
+              :class="connect_type === type ? 'checked' : ''"
               disabled
             /><label :for="type">{{ type }}</label>
           </div>
@@ -21,72 +21,81 @@
         <li class="list-title"><span>Key</span><span>Value</span></li>
         <li v-for="(item, idx) in key_values" :key="idx">
           <select disabled>
-            <option :value="item.key" selected>{{item.key}}</option>
+            <option :value="item.key" selected>{{ item.key }}</option>
           </select>
-          <input :type="item.key === 'Password' ? 'password' : 'text'" placeholder="input value" :value="item.value" disabled/>
+          <input
+            :type="item.key === 'Password' ? 'password' : 'text'"
+            placeholder="input value"
+            :value="item.value"
+            disabled
+          />
         </li>
       </ul>
     </section>
   </div>
 </template>
 
+<style scoped>
+.connect-info {
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+}
+.connect-info li:not(:last-child) {
+  margin-bottom: 10px;
+}
+.connect-info .list-title {
+  margin-bottom: 15px;
+}
+.connect-info .config-list li {
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: 2fr 3fr;
+}
+</style>
+
 <script>
-import { connect_keys } from '@/modules/static/common'
+import { connectKeys } from '@/constants/common';
+
 export default {
   created() {
-    this.init(this.props)
+    this.init(this.props);
   },
-  props: { props: {
-    type : Object,
-    default : () => ({})
-  }, },
-  methods : {
+  props: {
+    props: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+  methods: {
     init(data) {
-      if(data) {
-        if(data.list) {
-          const tr_data = Object.values(data.list)
-          for(let i = 0; i < 3; i++) {
-            this.key_values[i].key = tr_data[i] ? tr_data[i].key : 'none'
-            this.key_values[i].value = tr_data[i] ? tr_data[i].value : ''
+      if (data) {
+        if (data.list) {
+          const tr_data = Object.values(data.list);
+          for (let i = 0; i < 3; i++) {
+            this.key_values[i].key = tr_data[i] ? tr_data[i].key : 'none';
+            this.key_values[i].value = tr_data[i] ? tr_data[i].value : '';
           }
         }
-        if(data.connect) this.connect_type = data.connect
+        if (data.connect) this.connect_type = data.connect;
       }
-    }
+    },
   },
   data() {
     return {
       modeList: Object.keys(connect_keys),
-      key_values : [
-        {key : 'none', value : ''},
-        {key : 'none', value : ''},
-        {key : 'none', value : ''},
+      key_values: [
+        { key: 'none', value: '' },
+        { key: 'none', value: '' },
+        { key: 'none', value: '' },
       ],
-      connect_type : this.props.connect
+      connect_type: this.props.connect,
     };
   },
-  watch : {
-    props(newProps) { this.init(newProps) }
-  }
+  watch: {
+    props(newProps) {
+      this.init(newProps);
+    },
+  },
 };
 </script>
-
-<style scoped>
-.connect-info {
-	 padding: 10px;
-	 display: grid;
-	 grid-template-columns: 2fr 3fr;
-}
- .connect-info li:not(:last-child) {
-	 margin-bottom: 10px;
-}
- .connect-info .list-title {
-	 margin-bottom: 15px;
-}
- .connect-info .config-list li {
-	 display: grid;
-	 grid-gap: 5px;
-	 grid-template-columns: 2fr 3fr;
-}
-
-</style>

@@ -29,7 +29,7 @@ export const routes = [
     path: '/permission',
     name: '인증 권한 관리',
     beforeEnter: tokenCheck(),
-    component: () => import('../views/Permission.vue'),
+    component: () => import('../views/PolicyStatus.vue'),
   },
   {
     path: '/auth',

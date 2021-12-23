@@ -25,10 +25,11 @@
 </style>
 
 <script lang="ts">
-import HCL from 'js-hcl-parser';
-import Table from '@/components/Table.vue'; // @ is an alias to /src
+import { responseMiddleware } from '@utils/dataTransform';
+import Table from '@/components/Table.vue';
 import PermissionManage from './popup/PermissionManage.vue';
-import { category, columns } from '@/modules/static/permission';
+import { category, columns } from '@/constants/permission';
+import { createButton } from '@/utils/dynamicElement';
 import * as Api from '@/apis/policy.js';
 // import dataaa from '@/modules/static/dataTransform.js'
 
@@ -60,16 +61,8 @@ export default {
     onUpdate(row) {
       Api.getPolicyInfo(row.name)
         .then((res) => {
-          const { rules: hclString } = res.data.policy;
-          const jsonData = JSON.parse(HCL.parse(hclString));
-          const rolesData = jsonData?.path
-            .map((obj) => Object.entries(obj))
-            .map((arr) => ({
-              path: arr[0][0],
-              capabilities: arr[0][1][0].capabilities,
-            }));
-
-          this.props = { ...this.props, name: row.name, role: rolesData ?? [], isNew: false };
+          const rules = responseMiddleware.policyInfo(res.data);
+          this.props = { ...this.props, name: row.name, rules, isNew: false };
           this.$modal.show('modal');
         })
         .catch(() => this.$alert('관리자에게 문의해주세요', 'Error'));
@@ -107,36 +100,24 @@ export default {
         })
         .catch(() => this.$alert('관리자에게 문의해주세요', 'Error'));
     },
+    setDinamicColumn() {
+      this.columns[1].renderBodyCell = ({ row }, h) =>
+        h('div', { attrs: { class: 'button-group' } }, [
+          createButton({ h, label: '변경', className: 'primary', onClick: () => this.onUpdate(row) }),
+          createButton({
+            h,
+            label: '삭제',
+            className: 'secondary',
+            onClick: () =>
+              this.$confirm('삭제하시겠습니까?')
+                .then(() => this.onDelete(row.name))
+                .catch(),
+          }),
+        ]);
+    },
   },
   created() {
-    const last_idx = this.columns.length - 1;
-    const _vm = this;
-    this.columns[last_idx] = {
-      ...this.columns[last_idx],
-      renderBodyCell: ({ row }, h) =>
-        h('div', { attrs: { class: 'button-group' } }, [
-          h('input', {
-            attrs: { type: 'button', value: '변경', class: 'primary' },
-            on: {
-              click() {
-                _vm.onUpdate(row);
-              },
-            },
-          }),
-          h('input', {
-            attrs: { type: 'button', value: '삭제', class: 'secondary' },
-            on: {
-              click() {
-                _vm
-                  .$confirm('삭제하시겠습니까?')
-                  .then(() => _vm.onDelete(row.name))
-                  .catch(() => {});
-              },
-            },
-          }),
-        ]),
-    };
-
+    this.setDinamicColumn();
     this.init();
   },
 };

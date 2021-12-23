@@ -11,41 +11,6 @@
   </div>
 </template>
 
-<script>
-import SettingConnectInfo from "./SettingConnectInfo.vue";
-import SettingEssentialInfo from "./SettingEssentialInfo.vue";
-
-export default {
-  props: { infoList: Object },
-
-  components: { SettingConnectInfo, SettingEssentialInfo },
-  data() {
-    return {
-      data : {}
-    }
-  },
-  methods: {
-    onDelete() { this.$emit("delete") },
-    init(data) {
-        if(data && data['customerIp']) {
-          const { customerIp : ip, protocol : connect, model, host, equip } = data
-          const { ...list} = data.list
-          this.data = { ip, connect, model, host, equip, list }
-        }
-      }
-  },
-  computed : {
-    isFile() { return (this.infoList && this.infoList['customerIp']) }
-  },
-  watch : {
-    infoList : {
-      immediate : true,
-      handler(newData) { this.init(newData) }
-    }
-  },
-  created() { this.init(this.infoList) }
-};
-</script>
 <style scoped>
 .right-algin {
   margin: 10px 0;
@@ -55,3 +20,47 @@ export default {
   margin: 10px 0;
 }
 </style>
+
+<script>
+import SettingConnectInfo from './SettingConnectInfo.vue';
+import SettingEssentialInfo from './SettingEssentialInfo.vue';
+
+export default {
+  props: { infoList: Object },
+
+  components: { SettingConnectInfo, SettingEssentialInfo },
+  data() {
+    return {
+      data: {},
+    };
+  },
+  methods: {
+    onDelete() {
+      this.$emit('delete');
+    },
+    init(data) {
+      if (data && data.customerIp) {
+        const { customerIp: ip, protocol: connect, model, host, equip } = data;
+        const { ...list } = data.list;
+        this.data = { ip, connect, model, host, equip, list };
+      }
+    },
+  },
+  computed: {
+    isFile() {
+      return this.infoList && this.infoList.customerIp;
+    },
+  },
+  watch: {
+    infoList: {
+      immediate: true,
+      handler(newData) {
+        this.init(newData);
+      },
+    },
+  },
+  created() {
+    this.init(this.infoList);
+  },
+};
+</script>
