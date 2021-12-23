@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="title">
-      {{ title }}
+      {{ RESOURCE.TITLE }}
       <input type="button" :value="button.label" :class="button.className" @click="buttonClick" />
     </div>
     <div class="container">
@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import Table from '@/components/Table.vue';
-import { title, button, category, columns } from '@/constants/equipment.js';
+import { RESOURCE, button, category, columns } from '@/constants/equipment.js';
 import { responseMiddleware } from '@/utils/dataTransform';
 import { setError } from '@/utils/errorHandling';
 import * as Api from '@/apis/equipment.js';
@@ -26,7 +26,7 @@ import * as Api from '@/apis/equipment.js';
 export default {
   components: { Table },
   data() {
-    return { data: [], category, columns, title, button };
+    return { data: [], category, columns, RESOURCE, button };
   },
   methods: {
     buttonClick() {

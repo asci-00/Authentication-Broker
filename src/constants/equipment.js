@@ -18,4 +18,6 @@ export const button = {
   className: 'right-button',
 };
 
-export const title = '장비 목록';
+export const RESOURCE = {
+  TITLE: '장비 목록',
+};

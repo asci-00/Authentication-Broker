@@ -1,12 +1,13 @@
 // tree data set
+import { connectKeyOptions } from '@/constants/common';
 import HCL from 'js-hcl-parser';
 
 const getTreeLeafNode = (obj) => {
   const { customerIp, protocol } = obj;
   const { model, host, equip, ...list } = obj.data;
-  const host_name = host && host !== '' ? host : 'default';
+  const hostName = host || 'default';
   return {
-    text: `${protocol}:${customerIp}:${host_name}`,
+    text: `${protocol}:${customerIp}:${hostName}`,
     icon: 'fa fa-file',
     info: {
       customerIp,
@@ -14,7 +15,7 @@ const getTreeLeafNode = (obj) => {
       model,
       host,
       equip,
-      list: connect_keys[protocol]
+      list: connectKeyOptions[protocol]
         .filter((key) => list[key])
         .map((key) => ({
           key,

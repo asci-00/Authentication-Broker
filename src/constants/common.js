@@ -23,3 +23,5 @@ export const defaultValues = {
   customerName: '',
   path: '',
 };
+
+export const NOT_FOUND_MESSAGE = '정상적인 접근이 아닙니다. Sniper Automation을 통해 재접속하시기 바랍니다.';

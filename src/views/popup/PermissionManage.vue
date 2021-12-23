@@ -5,19 +5,19 @@
     <section class="left-container">
       <div class="inner-container right-border">
         <div class="label-content">
-          <label>권한명</label>
+          <label>{{ RESOURCE.POPUP.PERMISSION_NAME }}</label>
           <input type="text" placeholder="Input permission name" v-model="per_name" />
         </div>
         <div class="label-content">
           <div>
-            <label>권한 목록</label>
+            <label>{{ RESOURCE.POPUP.PERMISSION_LIST }}</label>
             <i class="fa fa-plus icon" @click="init()"></i>
           </div>
           <div class="table-container">
             <ve-table
               :max-height="300"
               :columns="columns"
-              :table-data="rules"
+              :table-data="authRules"
               :event-custom-option="{
                 bodyRowEvents: ({ row, rowIndex }) => ({ click: (event) => onRowClick(row, rowIndex) }),
               }"
@@ -32,31 +32,44 @@
         <div class="setting-box">
           <div class="head-box">
             <div class="tree-wrap">
-              <h2 class="line-label"><span>인증 디렉토리</span></h2>
+              <h2 class="line-label">
+                <span>{{ RESOURCE.POPUP.TREE.TITLE }}</span>
+              </h2>
               <v-jstree
                 :data="tree_data"
                 allow-batch
                 whole-row
-                @item-click="itemClick"
+                @item-click="onClickItem"
                 class="tree-wrapper scroll-container modal-tree"
                 v-if="tree_data.length"
               />
             </div>
             <div>
-              <h2 class="line-label"><span>권한</span></h2>
+              <h2 class="line-label">
+                <span>{{ RESOURCE.POPUP.TREE.PERMISSION }}</span>
+              </h2>
               <v-check-list :list="perm_list" @change="permChange" :checked="checked" />
             </div>
           </div>
           <footer class="foot-box">
             <input type="text" v-model="path" placeholder="input path" />
-            <input type="button" @click="onApply()" value="적용" class="primary" />
+            <input
+              type="button"
+              @click="onApply()"
+              :value="RESOURCE.POPUP.BUTTONS.APPLY.label"
+              :class="RESOURCE.POPUP.BUTTONS.APPLY.className"
+            />
           </footer>
         </div>
       </div>
     </section>
     <footer class="button-box">
-      <button class="primary" @click="onsubmit()">확인</button>
-      <button class="secondary" @click="onExit()">취소</button>
+      <button :class="RESOURCE.POPUP.BUTTONS.SUBMIT.className" @click="onSubmit()">
+        {{ RESOURCE.POPUP.BUTTONS.SUBMIT.label }}
+      </button>
+      <button :class="RESOURCE.POPUP.BUTTONS.CANCEL.className" @click="onExit()">
+        {{ RESOURCE.POPUP.BUTTONS.CANCEL.label }}
+      </button>
     </footer>
   </div>
 </template>
@@ -109,10 +122,13 @@
 
 <script>
 import VJstree from 'vue-jstree';
+import * as Api from '@/apis/equipment';
+import { getPath } from '@/utils/tree.js';
 import VCheckList from '@/components/CheckList';
-import { permColumns } from '@/constants/permission';
+import { setError } from '@/utils/errorHandling';
+import { createButton } from '@/utils/dynamicElement';
+import { permColumns, RESOURCE } from '@/constants/policy';
 import { objectToTree, objectToHCL } from '@/utils/dataTransform';
-import * as Api from '@/apis/equipment.js';
 
 export default {
   components: { VJstree, VCheckList },
@@ -120,7 +136,7 @@ export default {
     title: String,
     guideMessage: String,
     name: String,
-    rule: {
+    rules: {
       type: Array,
       default: () => [],
     },
@@ -134,21 +150,21 @@ export default {
       tree_data: [],
       perm_list: ['create', 'delete', 'update', 'read'],
       checked: [false, false, false, false],
-      rules: this.rule,
+      authRules: this.rules,
       selectedItem: null,
       selectedPathIdx: null,
+      RESOURCE,
     };
   },
   methods: {
-    itemClick(node) {
-      this.selectedItem = node;
-      let now = node;
-      let path = `/${node.model.text}`;
-      while (now.$parent.model) {
-        now = now.$parent;
-        path = `/${now.model.text}${path}`;
-      }
-      this.path = path;
+    requestEquipList() {
+      Api.getTreeEquipList()
+        .then((res) => (this.tree_data = objectToTree(res.data)))
+        .catch(setError.bind(this));
+    },
+    onClickItem(item) {
+      this.selectedItem = item;
+      this.path = getPath(item);
     },
     onRowClick(rowData, idx) {
       this.selectedPathIdx = idx;
@@ -159,14 +175,15 @@ export default {
       this.checked = data;
     },
     onApply() {
-      if (this.path === '' || !this.checked.includes(true)) this.$alert('필수항목을 입력해주십시오', 'Warning');
+      if (this.path === '' || !this.checked.includes(true))
+        this.$alert(RESOURCE.ALERT_MESSAGE.REQUIRE_CHECK, 'Warning');
       else if (this.selectedPathIdx) {
-        this.rules[this.selectedPathIdx] = {
+        this.authRules[this.selectedPathIdx] = {
           path: this.path,
           capabilities: this.perm_list.filter((i, idx) => this.checked[idx]),
         };
       } else {
-        this.rules.push({
+        this.authRules.push({
           path: this.path.substr(1),
           capabilities: this.perm_list.filter((i, idx) => this.checked[idx]),
         });
@@ -180,61 +197,34 @@ export default {
       this.selectedPathIdx = null;
       this.path = '';
     },
-    onsubmit() {
-      if (this.per_name && this.rules.length) {
-        this.rules = this.rules.map((item) => ({
+    onSubmit() {
+      if (this.per_name && this.authRules.length) {
+        this.authRules = this.authRules.map((item) => ({
           path: item.path,
           capabilities:
             item.capabilities.includes('read') && !item.capabilities.includes('list')
               ? item.capabilities.concat('list')
               : item.capabilities,
         }));
-        this.$emit('submit', { name: this.per_name, data: objectToHCL(this.rules), isNew: this.isNew });
+        this.$emit('submit', { name: this.per_name, data: objectToHCL(this.authRules), isNew: this.isNew });
       } else this.$alert(undefined, undefined, undefined, { html: '권한명과 하나 이상의<br/> 권한이 필요합니다' });
     },
-    onDelete(idx) {
-      this.rules.splice(idx, 1);
+    onDelete(ev, idx) {
+      ev.stopPropagation();
+      this.authRules.splice(idx, 1);
     },
     onExit() {
-      this.$confirm('취소하시겠습니까?').then(() => this.$emit('close'));
+      this.$confirm(RESOURCE.ALERT_MESSAGE.CENCEL_CHECK).then(() => this.$emit('close'));
+    },
+
+    setDynamicColumn() {
+      this.columns[1].renderBodyCell = ({ rowIndex }, h) =>
+        createButton({ h, ...RESOURCE.POPUP.TREE.BUTTON, onClick: (ev) => this.onDelete(ev, rowIndex) });
     },
   },
   created() {
-    const _vm = this;
-
-    this.columns = [
-      ...this.columns,
-      {
-        key: '2',
-        field: 'buttons',
-        title: '',
-        align: 'right',
-        width: 20,
-        renderBodyCell: ({ rowIndex }, h) =>
-          h(
-            'input',
-            {
-              attrs: { type: 'button', value: 'X', class: 'small secondary' },
-              on: {
-                click(ev) {
-                  ev.stopPropagation();
-                  _vm.onDelete(rowIndex);
-                },
-              },
-            },
-            []
-          ),
-      },
-    ];
-
-    Api.getTreeEquipList()
-      .then((res) => {
-        this.tree_data = objectToTree(res.data);
-      })
-      .catch((err) => {
-        const message = err.rt === 403 ? '세션이 유효하지 않습니다.' : '관리자에게 문의해주세요';
-        this.$alert(message, 'Error');
-      });
+    this.setDynamicColumn();
+    this.requestEquipList();
   },
   beforeDestroy() {
     if (this.selectedItem) this.selectedItem.model.selected = false;

@@ -1,9 +1,15 @@
 <template>
   <div id="wrapper">
-    <div class="error">정상적인 접근이 아닙니다. Sniper Automation을 통해 재접속하시기 바랍니다.</div>
+    <div class="error">{{ NOT_FOUND_MESSAGE }}</div>
   </div>
 </template>
 
 <script>
-export default {};
+import { NOT_FOUND_MESSAGE } from '@/constants/common';
+
+export default {
+  data() {
+    return { NOT_FOUND_MESSAGE };
+  },
+};
 </script>

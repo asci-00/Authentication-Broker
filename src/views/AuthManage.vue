@@ -1,11 +1,11 @@
 <template>
   <div class="wrapper">
-    <div class="title">인증 정보</div>
+    <div class="title">{{ RESOURCE.TREE.TITLE }}</div>
     <section class="container">
       <div class="half-container">
         <div class="head">
           <div class="inner-box-title">
-            인증 디렉토리 구조
+            {{ RESOURCE.TREE.STRUCTOR }}
             <i class="fa fa-plus icon" @click="openPopup()"></i>
           </div>
           <div class="filter">
@@ -28,7 +28,7 @@
         />
       </div>
       <div class="half-container">
-        <div class="inner-box-title" :style="{ marginBottom: '10px' }">인증 정보 설정</div>
+        <div class="inner-box-title" :style="{ marginBottom: '10px' }">{{ RESOURCE.MANAGE_FILE }}</div>
         <div class="setting-box"><setting-certi-info :info-list="autoInfo" @delete="onDelete()" /></div>
       </div>
     </section>
@@ -98,6 +98,7 @@ import SettingCertiInfo from '@/components/SettingCertiInfo.vue';
 import { setError } from '@/utils/errorHandling';
 import { objectToTree } from '@/utils/dataTransform';
 import { getPath, searchItem } from '@/utils/tree.js';
+import { RESOURCE } from '@/constants/authmanage';
 
 export default {
   components: { VJstree, SearchBar, AuthCreate, SettingCertiInfo },
@@ -113,6 +114,7 @@ export default {
       search: '',
       path: '',
       autoInfo: null,
+      RESOURCE,
     };
   },
   methods: {
@@ -122,9 +124,9 @@ export default {
       this.autoInfo = null;
       this.setTreeData();
     },
-    initModelData(model) {
+    initSearchResult(model) {
       model.highlight = false;
-      model.children.forEach((child) => this.initModelData(child));
+      model.children.forEach(this.initSearchResult);
     },
     initTreeData(data) {
       this.model_data = data;
@@ -140,7 +142,7 @@ export default {
         .then(() => {
           this.tree_data = [];
           this.setTreeData();
-          this.$alert('적용되었습니다.');
+          this.$alert(RESOURCE.ALERT_MESSAGE.SUCCESS);
         })
         .then(this.closePopup)
         .catch(setError.bind(this));
@@ -159,12 +161,12 @@ export default {
       const { protocol, customerIp, host } = this.selectedItem.model.info;
       const hostName = host || 'default';
 
-      this.$confirm('삭제하시겠습니까?')
+      this.$confirm(RESOURCE.ALERT_MESSAGE.DELETE_CHECK)
         .then(() => this.deleteAuthFile(protocol, customerIp, hostName))
         .catch();
     },
     onSearch() {
-      this.model_data.forEach(this.initModelData); // 검색 초기화
+      this.model_data.forEach(this.initSearchResult); // 검색 초기화
 
       if (this.selectedCategory === 'all') this.model_data.forEach((item) => searchItem(item, this.search));
       else {
@@ -183,7 +185,7 @@ export default {
     this.init();
   },
   beforeDestroy() {
-    this.model_data.forEach(this.initModelData);
+    this.model_data.forEach(this.initSearchResult);
     if (this.selectedItem) this.selectedItem.model.selected = false;
   },
 };
