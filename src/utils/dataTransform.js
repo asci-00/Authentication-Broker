@@ -1,51 +1,6 @@
 // tree data set
-import { connectKeyOptions } from '@/constants/common';
 import HCL from 'js-hcl-parser';
 
-const getTreeLeafNode = (obj) => {
-  const { customerIp, protocol } = obj;
-  const { model, host, equip, ...list } = obj.data;
-  const hostName = host || 'default';
-  return {
-    text: `${protocol}:${customerIp}:${hostName}`,
-    icon: 'fa fa-file',
-    info: {
-      customerIp,
-      protocol,
-      model,
-      host,
-      equip,
-      list: connectKeyOptions[protocol]
-        .filter((key) => list[key])
-        .map((key) => ({
-          key,
-          value: list[key],
-        })),
-    },
-  };
-};
-const getTreeSubNode = (parent) =>
-  Object.keys(parent).map((subNode) => ({
-    text: subNode.slice(0, -1),
-    opened: false,
-    folder: true,
-    children: parent[subNode].length ? parent[subNode].map((child) => getTreeLeafNode(child)) : [],
-  }));
-// tree data transform function
-export const objectToTree = (obj) => [
-  {
-    text: 'external',
-    opened: true,
-    folder: true,
-    children: getTreeSubNode(obj.external),
-  },
-  {
-    text: 'internal',
-    opened: true,
-    folder: true,
-    children: getTreeSubNode(obj.internal),
-  },
-];
 // policy create function
 export const getRequestParam = (obj) => {
   const host = obj.required_info[2];

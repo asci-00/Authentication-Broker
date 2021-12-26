@@ -1,17 +1,17 @@
 <template>
   <div class="wrapper">
-    <div class="title">신규 등록</div>
+    <div class="title">{{ POPUP_RESOURCE.TITLE.MAIN }}</div>
     <div class="guide-box">
       <div class="radio">
         <input v-model="infos.type" id="set-internal" type="radio" name="type" value="internal" /><label
           for="set-internal"
-          >Internal</label
+          >{{ POPUP_RESOURCE.TYPE.INTERNAL }}</label
         >
       </div>
       <div class="radio">
         <input v-model="infos.type" id="set-external" type="radio" name="type" value="external" /><label
           for="set-external"
-          >External</label
+          >{{ POPUP_RESOURCE.TYPE.EXTERNAL }}</label
         >
       </div>
       <input
@@ -19,13 +19,13 @@
         name="customer"
         v-show="infos.type === 'external'"
         v-model="infos.customer_name"
-        placeholder="고객사명"
+        :placeholder="POPUP_RESOURCE.PLACEHOLDERS.CUSTOMER"
       />
     </div>
     <section class="container">
       <div class="inner-container">
         <div class="wrapper">
-          <div class="title secondary">필수 정보</div>
+          <div class="title secondary">{{ POPUP_RESOURCE.TITLE.REQUIRED_FORM }}</div>
           <ul class="list-box info-list">
             <li v-for="(info, idx) in infos.attributes" :key="idx">
               <label :for="info.key">{{ info.label }}</label>
@@ -36,10 +36,10 @@
       </div>
       <div class="inner-container">
         <div class="wrapper">
-          <div class="title secondary">접속 정보</div>
+          <div class="title secondary">{{ POPUP_RESOURCE.TITLE.CONNECT_FORM }}</div>
           <section class="connect-info">
             <ul class="list-box type-list">
-              <li class="list-title">접속 방식</li>
+              <li class="list-title">{{ POPUP_RESOURCE.TYPE.CONNECT }}</li>
               <li v-for="(type, idx) in connectKey" :key="idx">
                 <div class="radio" @click="radioClick(type)">
                   <input v-model="infos.connect_type" :id="type" :value="type" type="radio" name="connect-type" /><label
@@ -66,7 +66,7 @@
                 <input
                   v-model="connect.value"
                   type="text"
-                  placeholder="input value"
+                  :placeholder="POPUP_RESOURCE.PLACEHOLDERS.INPUT_GUIDE"
                   :disabled="connect.key === 'none'"
                 />
               </li>
@@ -76,8 +76,8 @@
       </div>
     </section>
     <footer class="button-box">
-      <button class="primary" @click="onsubmit()">확인</button>
-      <button class="secondary" @click="onExit()">취소</button>
+      <button class="primary" @click="onsubmit()">{{ POPUP_RESOURCE.BUTTONS.SUBMIT }}</button>
+      <button class="secondary" @click="onExit()">{{ POPUP_RESOURCE.BUTTONS.CANCEL }}</button>
     </footer>
   </div>
 </template>
@@ -140,6 +140,7 @@
 import { OPTION_ATTR_COUNT, connectKey, attributes, defaultValues } from '@/constants/common';
 import { getRequestParam } from '@/utils/dataTransform';
 import { isValidAuth } from '@/utils/validation';
+import { POPUP_RESOURCE } from '@/constants/authmanage';
 
 export default {
   data() {
@@ -150,6 +151,7 @@ export default {
         attributes: attributes.map((attr) => ({ ...attr, value: '' })),
       },
       connectKey,
+      POPUP_RESOURCE,
     };
   },
   computed: {
@@ -166,15 +168,12 @@ export default {
       // 입력 유효성 검증
       if (isValidAuth(this.infos.type, this.infos)) this.$emit('submit', getRequestParam(this.infos));
       else {
-        const message =
-          this.infos.type === 'internal'
-            ? 'IP와 장비이름이<br/>유효하지 않습니다'
-            : 'IP와 고객사명이<br/>유효하지 않습니다.';
+        const message = POPUP_RESOURCE.ALERT_MESSAGE[this.infos.type];
         this.$alert(undefined, undefined, undefined, { html: message });
       }
     },
     onExit() {
-      this.$confirm('취소하시겠습니까?').then(() => this.$emit('close'));
+      this.$confirm(POPUP_RESOURCE.ALERT_MESSAGE.CANCEL).then(() => this.$emit('close'));
     },
     keyInit() {
       this.infos.options = new Array(OPTION_ATTR_COUNT).fill(0).map(() => ({ key: 'none', value: '' }));

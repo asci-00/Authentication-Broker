@@ -28,7 +28,7 @@
 import * as Api from '@/apis/policy.js';
 import Table from '@/components/Table.vue';
 import { setError } from '@/utils/errorHandling';
-import { createButton } from '@/utils/dynamicElement';
+import { createButton, createDiv } from '@/utils/dynamicElement';
 import { responseMiddleware } from '@/utils/dataTransform';
 import PermissionManage from './popup/PermissionManage.vue';
 import { category, columns, RESOURCE } from '@/constants/policy';
@@ -91,21 +91,25 @@ export default {
 
     setDynamicColumn() {
       this.columns[1].renderBodyCell = ({ row }, h) =>
-        h('div', { attrs: { class: 'button-group' } }, [
-          createButton({
-            h,
-            ...RESOURCE.BUTTONS.CREATE,
-            onClick: () => this.setUpdatePopup(row),
-          }),
-          createButton({
-            h,
-            ...RESOURCE.BUTTONS.DELETE,
-            onClick: () =>
-              this.$confirm(RESOURCE.ALERT_MESSAGE.DELETE_CHECK)
-                .then(() => this.onDelete(row.name))
-                .catch(),
-          }),
-        ]);
+        createDiv({
+          h,
+          className: 'button-group',
+          children: [
+            createButton({
+              h,
+              ...RESOURCE.BUTTONS.CREATE,
+              onClick: () => this.setUpdatePopup(row),
+            }),
+            createButton({
+              h,
+              ...RESOURCE.BUTTONS.DELETE,
+              onClick: () =>
+                this.$confirm(RESOURCE.ALERT_MESSAGE.DELETE_CHECK)
+                  .then(() => this.onDelete(row.name))
+                  .catch(),
+            }),
+          ],
+        });
     },
   },
   created() {
